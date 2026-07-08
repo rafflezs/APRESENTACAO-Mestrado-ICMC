@@ -1,0 +1,146 @@
+Este apêndice complementa a Seção~\ref{cap:resultados:sec-analise-base-dados} com o detalhamento numérico do conjunto histórico e das 40 instâncias (10 por horizonte) utilizadas nos experimentos. A organização espelha a do capítulo: a Seção~\ref{apendice:base-geral-detalhe} aprofunda a análise descritiva do conjunto completo (02/01/2022 a 31/07/2023), e as Seções~\ref{apendice:base-h15}--\ref{apendice:base-h90} apresentam, para cada horizonte de planejamento, a tabela estendida das 10 instâncias, com colunas adicionais (médias diárias, número de unidades ativas) que foram omitidas do capítulo por concisão.
+
+\noindent\textbf{Estimativa.}\, Como na Seção~\ref{cap:resultados:base-geral}, todas as razões \emph{Demanda / (Salas\,$\times$\,Turnos)} e \emph{Disponibilidade / Demanda} reportadas neste apêndice são \emph{limitantes ingênuos}. Elas \textbf{ignoram} as restrições \ref{eq:r1}--\ref{eq:r5} do modelo (qualificação médico--unidade, unicidade diária, capacidade por turno, cobertura mínima) e \textbf{não correspondem a uma alocação factível}; servem apenas como referência rápida para o regime oferta\,$\times$\,demanda esperado em cada recorte.
+
+\section{Conjunto Histórico Completo}
+\label{apendice:base-geral-detalhe}
+
+A Figura~\ref{fig:apendice-scatter-salas-outros} examina a relação entre a soma mensal de salas disponíveis e três indicadores agregados na mesma granularidade: a demanda mensal de exames, a disponibilidade mensal de médicos e a quantidade de médicos distintos com pelo menos um turno ativo no mês. Demanda e disponibilidade exibem associação aproximadamente linear com a oferta de salas, enquanto a contagem de médicos distintos cresce de forma menos regular: o número de profissionais cadastrados aumenta ao longo do período sem que isso se traduza em proporção direta de salas adicionais, indicando que parte do crescimento da força de trabalho é absorvida pelo aumento da utilização das salas existentes.
+
+\newpage
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{0.333\textwidth}
+		\includegraphics[width=\textwidth]{images/scatter-sala-demanda_2.png}
+		\caption{Salas $\times$ Demanda}
+		\label{fig:apendice-scatter-sala-dem}
+	\end{subfigure}
+	\begin{subfigure}{0.333\textwidth}
+		\includegraphics[width=\textwidth]{images/scatter-sala-disponibilidade.png}
+		\caption{Salas $\times$ Disponibilidade}
+		\label{fig:apendice-scatter-sala-disp}
+	\end{subfigure}
+	\begin{subfigure}{0.333\textwidth}
+		\includegraphics[width=\textwidth]{images/scatter-sala-coutmed.png}
+		\caption{Salas $\times$ Médicos distintos}
+		\label{fig:apendice-scatter-sala-med}
+	\end{subfigure}
+	\caption{Figuras de dispersão entre indicadores agregados por mês.}
+	\label{fig:apendice-scatter-salas-outros}
+	\fautor
+\end{figure}
+
+A distribuição de salas entre as 37 unidades clínicas, ilustrada na Figura~\ref{fig:apendice-bar-sala-unidade}, é fortemente assimétrica: poucas unidades concentram a maior parte da capacidade agregada de salas-turno, enquanto a cauda longa contém clínicas com participação marginal. Essa heterogeneidade é uma das fontes de dificuldade do modelo MIP: clínicas de grande porte impõem restrições de cobertura mínima (C5) sobre um volume substancial de exames, e a mobilidade dos médicos entre essas unidades (qualificação dada pela matriz $I \times U$) é frequentemente limitada.
+
+\newpage
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{images/bar-sala-unidade.png}
+	\caption{Soma de salas $\times$ turnos por unidade clínica no conjunto histórico (2022--2023).}
+	\label{fig:apendice-bar-sala-unidade}
+	\fautor
+\end{figure}
+
+A Figura~\ref{fig:apendice-histogramas} apresenta as distribuições marginais da demanda e da quantidade de salas disponíveis ao nível mais granular do conjunto (uma observação por tripla data\,$\times$\,turno\,$\times$\,unidade). A demanda exibe distribuição fortemente assimétrica à direita, com massa concentrada em valores baixos a moderados e cauda longa para unidades de grande porte; a quantidade de salas disponíveis concentra-se em 1, 2 e 3 salas por turno, refletindo a estrutura modular das unidades.
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=\textwidth]{images/hist-demanda.png}
+		\caption{Demanda por (data, turno, unidade)}
+		\label{fig:apendice-hist-demanda}
+	\end{subfigure}
+	\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=\textwidth]{images/hist-salas.png}
+		\caption{Salas disponíveis por (data, turno, unidade)}
+		\label{fig:apendice-hist-salas}
+	\end{subfigure}
+	\caption{Distribuições marginais de demanda e capacidade de salas no conjunto histórico (2022--2023).}
+	\label{fig:apendice-histogramas}
+	\fautor
+\end{figure}
+
+\clearpage
+
+\section{Horizonte de 15 dias}
+\label{apendice:base-h15}
+
+O Quadro~\ref{quad:apendice-base-h15}, ao final desta seção, apresenta a caracterização estendida das 10 instâncias quinzenais, ordenadas cronologicamente. Em relação ao Quadro~\ref{quad:base-h15} do capítulo, são acrescentadas as colunas de médias diárias (demanda, disponibilidade e salas\,$\times$\,turnos) e o número de unidades clínicas ativas no recorte.
+
+\noindent No horizonte quinzenal, a soma de exames demandados oscila entre $\sim$28k (recorte de janeiro/2022) e $\sim$44k (recortes de 2023), refletindo o crescimento gradual do volume operacional ao longo do período. A razão \emph{Demanda / (Salas\,$\times$\,Turnos)} permanece em uma faixa estreita (20{,}8--23{,}5), sem ruptura clara entre instâncias de parametrização e de validação. A razão \emph{Disponibilidade / Demanda} inicia em $\sim$1{,}08 nos primeiros recortes de 2022 (excesso de mão-de-obra disponível) e cai para $\sim$0{,}98 nos recortes de meados de 2023 (déficit incipiente), evidenciando que o crescimento da demanda nos últimos meses do conjunto histórico supera o crescimento da disponibilidade médica registrada na base.
+
+\begingroup\let\cleardoublepage\clearpage
+\begin{sidewaysquadro}[p]
+	\centering
+	\caption{Caracterização estendida das 10 instâncias do horizonte de 15 dias.}
+	\input{tex/0-extras/inst_stats-appendix/h15.tex}
+	\label{quad:apendice-base-h15}
+	\fautor
+\end{sidewaysquadro}
+\endgroup
+
+\clearpage
+
+\section{Horizonte de 30 dias}
+\label{apendice:base-h30}
+
+O Quadro~\ref{quad:apendice-base-h30}, ao final desta seção, apresenta a caracterização estendida das 10 instâncias mensais. Em relação ao Quadro~\ref{quad:base-h30} do capítulo, são acrescentadas as colunas de médias diárias (demanda, disponibilidade e salas\,$\times$\,turnos) e o número de unidades clínicas ativas no recorte.
+
+\noindent No horizonte mensal, a soma de exames demandados varia entre $\sim$57k (janeiro/2022, instância parcial por iniciar em 02/01) e $\sim$91k (março/2023). A média diária de demanda evolui de $\sim$1.918 para $\sim$3.031 exames, com aumento simultâneo no número de médicos distintos ativos (141 para 182). A razão \emph{Demanda / (Salas\,$\times$\,Turnos)} oscila entre 21{,}5 e 23{,}6, e a razão \emph{Disponibilidade / Demanda} segue o mesmo padrão observado no horizonte quinzenal: começa próxima de 1{,}07 em 2022 e converge para valores ligeiramente inferiores a 1 nos recortes de 2023. A janela mensal já é suficiente para suavizar parte da variabilidade semanal observada no horizonte de 15 dias, mas preserva integralmente o efeito sazonal anual.
+
+\begingroup\let\cleardoublepage\clearpage
+\begin{sidewaysquadro}[p]
+	\centering
+	\caption{Caracterização estendida das 10 instâncias do horizonte de 30 dias.}
+	\input{tex/0-extras/inst_stats-appendix/h30.tex}
+	\label{quad:apendice-base-h30}
+	\fautor
+\end{sidewaysquadro}
+\endgroup
+
+\clearpage
+
+\section{Horizonte de 60 dias}
+\label{apendice:base-h60}
+
+O Quadro~\ref{quad:apendice-base-h60}, ao final desta seção, apresenta a caracterização estendida das 10 instâncias bimestrais. Em relação ao Quadro~\ref{quad:base-h60} do capítulo, são acrescentadas as colunas de médias diárias (demanda, disponibilidade e salas\,$\times$\,turnos) e o número de unidades clínicas ativas no recorte.
+
+\noindent No horizonte bimestral, a soma de exames demandados ultrapassa a casa das centenas de milhares (de $\sim$130k a $\sim$180k por instância), com média diária estável na faixa $\sim$2.160--2.993 exames. O número de médicos distintos cresce de 146 (recorte iniciado em 02/01/2022) para 193 (recortes de meados de 2023), confirmando a tendência de expansão da força de trabalho registrada na base. A amplitude das duas razões \emph{oferta\,$\times$\,demanda} se reduz em relação aos horizontes mais curtos --- \emph{Demanda / (Salas\,$\times$\,Turnos)} concentra-se entre 21{,}6 e 23{,}7, e \emph{Disponibilidade / Demanda} entre 0{,}96 e 1{,}06 ---, indicando que janelas mais longas amortecem flutuações pontuais de demanda e disponibilidade.
+
+\begingroup\let\cleardoublepage\clearpage
+\begin{sidewaysquadro}[p]
+	\centering
+	\caption{Caracterização estendida das 10 instâncias do horizonte de 60 dias.}
+	\input{tex/0-extras/inst_stats-appendix/h60.tex}
+	\label{quad:apendice-base-h60}
+	\fautor
+\end{sidewaysquadro}
+\endgroup
+
+\clearpage
+
+\section{Horizonte de 90 dias}
+\label{apendice:base-h90}
+
+O Quadro~\ref{quad:apendice-base-h90}, ao final desta seção, apresenta a caracterização estendida das 10 instâncias trimestrais. Em relação ao Quadro~\ref{quad:base-h90} do capítulo, são acrescentadas as colunas de médias diárias (demanda, disponibilidade e salas\,$\times$\,turnos) e o número de unidades clínicas ativas no recorte.
+
+\noindent No horizonte trimestral, cada instância corresponde a uma janela operacional completa de planejamento primário, com soma de exames demandados entre $\sim$205k e $\sim$273k. A média diária de demanda evolui de $\sim$2.284 (primeiro trimestre de 2022) para $\sim$3.030 (recortes de meados de 2023), acompanhada pela ampliação do quadro médico ativo (de 154 para 198 profissionais). As razões \emph{oferta\,$\times$\,demanda} apresentam a menor amplitude entre os quatro horizontes (\emph{Demanda / (Salas\,$\times$\,Turnos)} entre 21{,}9 e 23{,}6, \emph{Disponibilidade / Demanda} entre 0{,}97 e 1{,}05), refletindo o efeito de média do horizonte mais longo. Os $\sim$10\textsuperscript{6} variáveis binárias geradas por uma instância deste horizonte (cf.~Seção~\ref{cap:resultados:exato-gap}) impedem a convergência do método exato no limite de tempo adotado, motivando a comparação com as MIP-heurísticas e meta-heurísticas conduzida no Capítulo~\ref{cap:resultados}.
+
+\begingroup\let\cleardoublepage\clearpage
+\begin{sidewaysquadro}[p]
+	\centering
+	\caption{Caracterização estendida das 10 instâncias do horizonte de 90 dias.}
+	\input{tex/0-extras/inst_stats-appendix/h90.tex}
+	\label{quad:apendice-base-h90}
+	\fautor
+\end{sidewaysquadro}
+\endgroup
+
+\clearpage
+
+\section{Síntese}
+\label{apendice:base-sintese}
+
+A leitura conjunta dos quatro horizontes evidencia três padrões consistentes ao longo do conjunto histórico. Primeiro, o crescimento gradual do volume operacional --- demanda, disponibilidade e quantidade de médicos --- progride de forma aproximadamente linear entre 02/01/2022 e 31/07/2023, sem rupturas estruturais identificáveis nos quadros. Segundo, a razão \emph{Disponibilidade / Demanda} migra de um regime de leve excesso ($>1$) em 2022 para um regime de leve déficit ($<1$) em 2023, indicando que a expansão da força de trabalho registrada na base não acompanhou integralmente a ampliação da demanda no último semestre coberto. Terceiro, a amplitude das duas razões \emph{oferta\,$\times$\,demanda} diminui monotonicamente com o aumento do horizonte (de [20{,}8;\,23{,}5] em 15 dias para [21{,}9;\,23{,}6] em 90 dias na razão \emph{Demanda / (Salas\,$\times$\,Turnos)}), confirmando o efeito esperado de amortecimento estatístico em janelas mais longas. \textbf{Reitera-se} que estas razões mantêm o caráter de \emph{limitantes ingênuos} discutido na Seção~\ref{cap:resultados:base-geral}: oferecem um diagnóstico de regime, não uma medida de factibilidade.

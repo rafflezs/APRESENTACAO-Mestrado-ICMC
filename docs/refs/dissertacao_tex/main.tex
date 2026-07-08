@@ -1,0 +1,213 @@
+% ------------------------------------------------------------------------
+% ------------------------------------------------------------------------
+% ICMC: Modelo de Trabalho Acadêmico (tese de doutorado, dissertação de
+% mestrado e trabalhos monográficos em geral) em conformidade com 
+% ABNT NBR 14724:2011: Informação e documentação - Trabalhos acadêmicos -
+% Apresentação
+% ------------------------------------------------------------------------
+% ------------------------------------------------------------------------
+
+% Opções: 
+%   Qualificação          = qualificacao 
+%   Curso                 = doutorado/mestrado
+%   Situação do trabalho  = pre-defesa/pos-defesa (exceto para qualificação)
+%   Versão para impressão = impressao
+\documentclass[mestrado, pre-defesa]{packages/icmc}
+
+% ---------------------------------------------------------------------------
+% Pacotes Opcionais
+% ---------------------------------------------------------------------------
+
+\usepackage{rotating}           % Usado para rotacionar o texto
+% Float rotacionado para o ambiente `quadro` (equivalente ao `sidewaystable`,
+% preservando a numeração/nomenclatura de Quadros do abnTeX/ICMC).
+\makeatletter
+\newenvironment{sidewaysquadro}{\@rotfloat{quadro}}{\end@rotfloat}
+\makeatother
+\usepackage[all,knot,arc,import,poly]{xy}   % Pacote para desenhos gráficos
+\usepackage{multirow}
+\usepackage{booktabs}
+% Incluir pacote para tcolorbox
+% \usepackage{tcolorbox}
+% Este pacote pode conflitar com outros pacotes gráficos como o ``pictex''
+% Então é necessário usar apenas um dos pacotes conflitantes
+\newcommand{\VerbL}{0.52\textwidth}
+\newcommand{\LatL}{0.42\textwidth}
+
+%\usepackage{easyReview} % for \comment, \alert, etc.
+
+% ---------------------------------------------------------------------------
+
+
+% Definicao de novos comandos e pacotes ===============================
+
+\usepackage{pdflscape} % Orientacao horizontal da pagina
+
+\usepackage{array} % Array para centralizacao de colunas
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+
+% Fim da secao ============================================
+
+% ---
+% Informações de dados para CAPA e FOLHA DE ROSTO
+% ---
+% Tanto na capa quanto nas folhas de rosto apenas a primeira letra da primeira palavra (ou nomes próprios) devem estar em letra maiúscula, todas as demais devem ser em letra minúscula.
+\tituloPT{Técnicas de Otimização na Alocação de Médicos em Unidades de Diagnóstico por Imagem}
+\tituloEN{Optimization Techniques for Physician Scheduling in Diagnostic Imaging Units}
+\autor[Mariotti, T. R.]{Thiago Rafael Mariotti Claudio}
+\genero{M} % Gênero do autor (M = Masculino / F = Feminino)
+\orientador[Orientadora]{Profa. Dra.}{Maristela Oliveira dos Santos}
+%\coorientador{Prof. Dr.}{Fulano de Tal}
+\curso{CCMC}
+\data{10}{06}{2026} % Data do depósito
+\idioma{PT} % Idioma principal do documento (PT = português / EN = inglês)
+% ---
+
+
+% ---
+% RESUMOS
+% ---
+
+% Resumo em PORTUGUÊS
+% conter no máximo 500 palavras
+% conter no mínimo 1 e no máximo 5 palavras-chave
+\textoresumo[brazil]{
+A geração de escalas em redes de clínicas de exames de diagnóstico por imagem é uma atividade combinatória custosa, marcada por demandas heterogêneas, disponibilidades irregulares e pela coordenação de múltiplas unidades autônomas que compartilham profissionais. Este trabalho propõe e avalia uma formulação de Programação Inteira Mista bi-objetiva para o problema, minimizando simultaneamente exames não atendidos e trocas de clínica ao longo do horizonte de planejamento. A modelagem incorpora uma variável de estado adaptada do \textit{General Lot-sizing and Scheduling Problem} para detectar trocas mesmo em agendas com lacunas, e a estrutura bi-objetiva é resolvida pelo método $\varepsilon$-restrito. Para tanto, três famílias metodológicas são parametrizadas e comparadas sobre dados reais de 250 médicos e 37 unidades operadas em 2022 e 2023: o método exato com o \textit{solver} Gurobi; matheurísticas Relax-and-Fix e Fix-and-Optimize, isoladas e em arquitetura híbrida; e o algoritmo evolutivo NSGA-II nas variantes Estendida e Compacta, com operadores customizados de amostragem com consciência de restrições, cruzamento por blocos diários e mutação por realocação de \textit{slot}. Avalia-se o desempenho em quatro horizontes operacionais (15, 30, 60 e 90 dias), sob protocolo de dois estágios com instâncias de parametrização e validação. Os resultados evidenciam transição de regime entre 15 e 30 dias: o método exato atinge otimalidade apenas no ciclo quinzenal, e a partir de 30 dias o crescimento combinatório inviabiliza a convergência sob orçamento de uma hora por ponto da fronteira. O híbrido Relax-and-Fix seguido de Fix-and-Optimize mantém hipervolume competitivo em horizontes curtos, enquanto o NSGA-II Compacto, ao reduzir a dimensionalidade do cromossomo para a associação diária médico-clínica, supera a variante Estendida e ultrapassa a fronteira do exato em horizontes longos, consolidando-se como a abordagem mais robusta sob restrições estritas de tempo. As soluções meta-heurísticas apresentam violação parcial da cobertura mínima, indicando direção natural para o desenvolvimento de operadores de reparo. O estudo contribui para a literatura de escalonamento médico ao tratar conjuntamente múltiplas unidades autônomas e minimização explícita de remanejamentos, configuração pouco explorada em trabalhos similares.}
+{Escalonamento de Médicos, Otimização Bi-objetiva, Matheurísticas, MIP-Heuristicas, Modelagem Matemática}
+
+
+% resumo em INGLÊS
+% conter no máximo 500 palavras
+% conter no mínimo 1 e no máximo 5 palavras-chave
+\textoresumo[english]{
+Scheduling physicians in networks of diagnostic imaging clinics is a costly combinatorial activity, marked by heterogeneous demand, irregular availabilities, and the coordination of multiple autonomous units that share specialists. This work proposes and evaluates a bi-objective Mixed Integer Programming formulation for the problem, simultaneously minimising unmet exams and clinic swaps across the planning horizon. The model incorporates a state variable adapted from the General Lot-sizing and Scheduling Problem to detect swaps even in agendas with gaps, and the bi-objective structure is solved through the $\varepsilon$-constraint method. Three method families are parametrised and compared on real-world data of 250 physicians and 37 units operated in 2022 and 2023: the exact method with the Gurobi solver; Relax-and-Fix and Fix-and-Optimize matheuristics, both standalone and in a hybrid architecture; and the NSGA-II evolutionary algorithm in Extended and Compact variants, with custom operators for constraint-aware sampling, day-block crossover, and slot-reassignment mutation. The evaluation spans four operational horizons (15, 30, 60, and 90 days), under a two-stage protocol with parametrisation and validation instance sets. Results show a regime transition between 15 and 30 days: the exact method achieves optimality only in the biweekly cycle, and from 30 days onwards combinatorial growth prevents convergence within one hour per Pareto-frontier point. The hybrid Relax-and-Fix followed by Fix-and-Optimize retains competitive hypervolume in short horizons, while the Compact NSGA-II, by reducing chromosome dimensionality to the daily physician-clinic assignment, outperforms the Extended variant and surpasses the exact frontier in longer horizons, establishing itself as the most robust approach under strict time budgets. Metaheuristic solutions exhibit partial violation of the minimum coverage constraint, indicating a natural direction for repair-operator development. The study contributes to the physician scheduling literature by jointly addressing multiple autonomous units and the explicit minimisation of reassignments, a setting rarely covered in similar works.}
+{Physician Scheduling, Bi-objective Optimisation, Matheuristics, Matheuristics, Mathematical Modeling}
+
+
+% ----------------------------------------------------------
+% ELEMENTOS PRÉ-TEXTUAIS
+% ----------------------------------------------------------
+
+% Inserir a ficha catalográfica
+\incluifichacatalografica{tex/1-pre-textual/ficha-catalografica.pdf}
+
+% DEDICATÓRIA / AGRADECIMENTO / EPÍGRAFE
+\textodedicatoria*{tex/1-pre-textual/dedicatoria}
+\textoagradecimentos*{tex/1-pre-textual/agradecimentos}
+\textoepigrafe*{tex/1-pre-textual/epigrafe}
+
+% Inclui a lista de figuras
+\incluilistadefiguras
+
+% Inclui a lista de tabelas
+\incluilistadetabelas
+
+% % Inclui a lista de quadros
+\incluilistadequadros
+
+% % Inclui a lista de algoritmos
+% \incluilistadealgoritmos
+
+% % Inclui a lista de códigos
+% \incluilistadecodigos
+
+% % Inclui a lista de siglas e abreviaturas
+% \incluilistadesiglas
+
+% % Inclui a lista de símbolos
+% \incluilistadesimbolos
+
+% ----
+% Início do documento
+% ----
+\begin{document}
+% ----------------------------------------------------------
+% ELEMENTOS TEXTUAIS
+% ----------------------------------------------------------
+\textual
+
+\chapter{Introdução} % 1
+\input{tex/2-textual/introducao.tex}
+
+\chapter{Revisão Bibliográfica} % 2
+\input{tex/2-textual/revisao.tex}
+
+\chapter{Definição do Problema e Modelagem Matemática} % 3
+\input{tex/2-textual/problema.tex}
+
+\chapter{Abordagens de Solução} % 4
+\input{tex/2-textual/heuristicas}
+
+\chapter{Experimentos e Resultados} % 5
+\input{tex/2-textual/experimentos-resultados.tex}
+
+\chapter{Conclusões e Perspectivas} % 6
+\input{tex/2-textual/fechamento.tex}
+
+
+% ---
+% Finaliza a parte no bookmark do PDF, para que se inicie o bookmark na raiz
+% ---
+\bookmarksetup{startatroot}% 
+% ---
+
+% ----------------------------------------------------------
+% ELEMENTOS PÓS-TEXTUAIS
+% ----------------------------------------------------------
+\postextual
+
+% ----------------------------------------------------------
+% Referências bibliográficas
+% ----------------------------------------------------------
+\bibliography{bib/references}
+
+% ---------------------------------------------------------------------
+% GLOSSÁRIO
+% ---------------------------------------------------------------------
+
+% % Arquivo que contém as definições que vão aparecer no glossário
+% \input{tex/3-pos-textual/glossario.tex}
+% % Comando para incluir todas as definições do arquivo glossario.tex
+% \glsaddall
+% % Impressão do glossário
+% \printglossaries
+
+% ----------------------------------------------------------
+% Apêndices
+% ----------------------------------------------------------
+
+% ---
+% Inicia os apêndices
+% ---
+\begin{apendicesenv}
+
+    \chapter{Análise da Base de Dados por Instância}
+    \label{apendice-cap:analise-base-dados}
+    \input{tex/4-apendice/analise-base-dados}
+
+    \chapter{Análise Detalhada dos Resultados Exatos}
+    \label{apendice-cap:exato-detalhe}
+    \input{tex/4-apendice/exato-detalhe}
+
+\end{apendicesenv}
+% ---
+
+
+% ----------------------------------------------------------
+% Anexos
+% ----------------------------------------------------------
+
+% ---
+% Inicia os anexos
+% ---
+\begin{anexosenv}
+
+    % \chapter{Páginas interessantes na Internet} 
+    % \label{chapter:paginas-interessantes}
+    % \input{tex/5-anexos/paginas-interessantes}
+
+\end{anexosenv}
+% ---
+
+\end{document}

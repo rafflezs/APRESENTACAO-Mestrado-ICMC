@@ -1,0 +1,504 @@
+\label{cap:resultados}
+
+Neste capítulo, são apresentados a base de dados e as instâncias utilizadas nos experimentos, a configuração do ambiente computacional, a análise de parametrização dos métodos propostos e os resultados comparativos obtidos. Os experimentos avaliam as três famílias de métodos introduzidas no Capítulo~\ref{cap:mip-heuristicas}: a abordagem exata por $\varepsilon$-restrito, as MIP-heurísticas (Relax-and-Fix e híbrido) e as meta-heurísticas NSGA-II (Estendido e Compacto).
+
+\section{Base de Dados}
+\label{cap:resultados:instancias}
+
+O conjunto dispõe de um total de 28.445 registros de exames agendados em 2022, contando com 250 profissionais disponíveis para alocação em 37 unidades distintas. Na prática, o tomador de decisão gera a escala a partir da demanda clínica de até 90 dias.
+
+O trabalho vigente baseia-se em dados reais históricos, disponibilizados pelo corpo gestor da rede de clínicas em estudo. Trata-se de registros dispostos em diferentes bases de dados com informações sobre diferentes aspectos do funcionamento das unidades: o conjunto base armazena os registros de cobertura e atendimentos de cada clínica em todos os períodos, o conjunto de escalas que apresenta a alocação de cada profissional em cada período do horizonte histórico, e o conjunto restrição que informa a qual clínica o médico está associado, podendo, portanto, só atender a esse grupo de unidades. O Quadro \ref{quad:registros-base-dados} descreve os atributos observados nas três bases de dados utilizada para construção das instâncias do modelo.
+
+\begin{quadro}[h]
+	\centering
+	\caption{Registros e informações disponíveis na base de dados.}
+	\begin{footnotesize}
+		\begin{tabular}{|c|P{2cm}|M{10cm}|}
+			\hline
+			\textbf{Arquivo}             & \textbf{Dado} & \textbf{Descrição}                                    \\
+			\hline\hline
+
+			\multirow{7}{2cm}{Base}      & Data          & Data do registro (dia e turno)                        \\ \cline{2-3}
+			                             & Clínica       & Registro da clínica observada                         \\ \cline{2-3}
+			                             & Demanda       & Total de exames agendados                             \\ \cline{2-3}
+			                             & Oferecidos    & Total de exames atendidos                             \\ \cline{2-3}
+			                             & Salas         & Quantidade de salas disponíveis no período            \\	\cline{2-3}
+			                             & Cobertura     & Relação entre Oferecidos e Demanda                    \\ \cline{2-3}
+			                             & Buracos       & Salas ociosas no período                              \\ \cline{2-3}
+			                             & Ocupação      & Relação de salas utilizadas e salas disponíveis       \\
+			\hline \hline
+			\multirow{5}{2cm}{Escala}    & Data          & Data do registro (dia e turno)                        \\ \cline{2-3}
+			                             & Médico        & Registro do médico observado                          \\ \cline{2-3}
+			                             & Situação      & Estado de alocação do médico (se foi ou não escalado) \\ \cline{2-3}
+			                             & Clínica       & A clínica para qual foi escalado                      \\ \cline{2-3}
+			                             & Ofertados     & Quantos exames o médico realizou no atendimento       \\ \cline{2-3}
+			\hline \hline
+			\multirow{2}{2cm}{Restrição} & Médico        & Registro do médico observado                          \\ \cline{2-3}
+			                             & Clínica       & Unidade que está associado                            \\
+			\hline
+		\end{tabular}
+	\end{footnotesize}
+	\label{quad:registros-base-dados}
+	\fautor
+\end{quadro}
+
+Devido ao volume de dados e grande possibilidade de geração de instâncias, dada pela combinação de diversos recortes e parâmetros, utilizou-se de técnicas de processamento e modelagem de dados, descritas e justificadas na seção \ref{cap:resultados:subsec-pipe}, para automatizar o processo de instanciação do problema.
+
+\subsection{Esteira de Dados e Gerador de Instâncias}
+\label{cap:resultados:subsec-pipe}
+
+Para facilitar processamento computacional e uniformizar o processo, optou-se pela criação de uma esteira de dados (em inglês \textit{pipeline}) sequencial para extração de informações relevantes, ilustrada na imagem apresentada pela Figura \ref{fig:diag-pipeline-instancias}. A partir do conjunto de dados histórico inicia-se o processo de captação, que obtêm todos os valores, permitindo operações de transformação (como limpeza, separação, recorte e ratificação dos dados).
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=11cm]{images/Quali - ETL Base de Dados.png}
+	\caption{\textit{Pipeline} da geração de instâncias.}
+	\label{fig:diag-pipeline-instancias}
+	\fautor
+\end{figure}
+
+O processo final, descrito por \textit{entrega}, divide as informações em dois grupos que abrangem o mesmo período: dados como a escala registrada foram montados em uma base de dados acessível somente na etapa de validação do modelo, quando há comparação direta entre o resultado do modelo e o registrado. Elementos que compõem a fundação para formulação de componentes do modelo foram movidos para um grupo de base de dados da mesma natureza, facilitando o acesso durante o fluxo de operações computacionais e reduzindo \textit{overhead} (custo adicional de computacional) para o processamento do material.
+
+\section{Análise da Base de Dados}
+\label{cap:resultados:sec-analise-base-dados}
+
+A análise descritiva da base histórica é organizada em dois recortes complementares. A Seção~\ref{cap:resultados:base-geral} apresenta uma visão consolidada do conjunto completo (de 02/01/2022 a 31/07/2023) e duas razões \emph{oferta\,$\times$\,demanda} que servem de referência para todo o capítulo. A Seção~\ref{cap:resultados:base-instancias} caracteriza, individualmente, as 10 instâncias de cada um dos quatro horizontes de planejamento (15, 30, 60 e 90 dias) utilizadas nos experimentos. O detalhamento numérico por instância, juntamente com os gráficos descritivos, encontra-se no Apêndice~\ref{apendice-cap:analise-base-dados}.
+
+\subsection{Visão Geral do Conjunto Histórico}
+\label{cap:resultados:base-geral}
+
+A base histórica disponibilizada pela rede de clínicas cobre 576 dias consecutivos entre 02/01/2022 e 31/07/2023, dos quais 493 são dias úteis (segunda a sábado) e 83 são domingos --- estes últimos com turno vespertino vazio por característica operacional. Ao todo, são 250 médicos distintos com pelo menos uma janela de disponibilidade registrada e 37 unidades clínicas com demanda observada no período. O Quadro~\ref{quad:base-overall} consolida os totais e médias diárias do conjunto completo, junto às duas razões agregadas \emph{oferta\,$\times$\,demanda} adotadas como referência ao longo do capítulo.
+
+\begin{quadro}[h]
+	\centering
+	\caption{Indicadores agregados do conjunto histórico completo.}
+	\input{tex/0-extras/dataset_overall}
+	\label{quad:base-overall}
+	\fautor
+\end{quadro}
+
+A Figura~\ref{fig:line-demanda-dispo-all} mostra a evolução diária de demanda e disponibilidade ao longo dos 19 meses do conjunto histórico, junto às respectivas médias móveis de 14 dias. Observa-se ciclicidade semanal acentuada (com quedas regulares aos domingos, em razão da ausência do turno vespertino) e crescimento gradual de ambos os indicadores ao longo do período, com ampliação coordenada entre demanda e capacidade. A análise de dispersão entre salas, demanda, disponibilidade e quantidade de médicos, bem como a distribuição não-uniforme de salas entre as 37 unidades, é apresentada no Apêndice~\ref{apendice-cap:analise-base-dados}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=12cm]{images/line-disponibilidade-demanda.png}
+	\caption{Demanda e disponibilidade diárias entre 02/01/2022 e 31/07/2023, com média móvel de 14 dias.}
+	\label{fig:line-demanda-dispo-all}
+	\fautor
+\end{figure}
+
+\noindent\textbf{Estimativa.}\, As razões \emph{Demanda / (Salas\,$\times$\,Turnos)}~$\approx 22{,}73$ exames por sala-turno e \emph{Disponibilidade / Demanda}~$\approx 1{,}01$ apresentadas no Quadro~\ref{quad:base-overall} devem ser interpretadas como \emph{limitantes ingênuos} da relação oferta\,$\times$\,demanda agregada. Elas \textbf{ignoram} as restrições \ref{eq:r1}--\ref{eq:r5} do modelo (qualificação médico--unidade, unicidade diária, capacidade por turno, cobertura mínima) e \textbf{não correspondem a uma alocação factível}: servem apenas para sinalizar, em ordem de grandeza, que o volume agregado de exames demandados é da mesma magnitude da disponibilidade médica registrada e que a saturação média por sala-turno é compatível com a operação observada.
+
+\subsection{Caracterização das Instâncias}
+\label{cap:resultados:base-instancias}
+
+Cada instância utilizada nos experimentos corresponde a um recorte contíguo do conjunto histórico definido pelo seu horizonte (15, 30, 60 ou 90 dias) e pela data de início. Os critérios de seleção das datas de início, bem como a separação entre instâncias de parametrização e de validação, são descritos na Seção~\ref{cap:resultados:instancias-horizontes}. Os Quadros~\ref{quad:base-h15}--\ref{quad:base-h90} resumem, para cada um dos quatro horizontes, as 10 instâncias selecionadas, com os totais agregados de demanda, disponibilidade e capacidade de salas, e as duas razões \emph{oferta\,$\times$\,demanda} introduzidas na Seção~\ref{cap:resultados:base-geral}. As mesmas instâncias são detalhadas, com colunas adicionais (médias diárias, número de unidades ativas, dias úteis), no Apêndice~\ref{apendice-cap:analise-base-dados}.
+
+A leitura conjunta dos Quadros~\ref{quad:base-h15}--\ref{quad:base-h90} evidencia variabilidade não-trivial entre instâncias de um mesmo horizonte: a razão \emph{Demanda / (Salas\,$\times$\,Turnos)} oscila tipicamente entre 20{,}8 e 23{,}5, refletindo períodos com saturação maior ou menor da capacidade de salas, enquanto a razão \emph{Disponibilidade / Demanda} permanece próxima de 1, com leves desvios em direção ao excesso (recortes de 2022) ou ao déficit (alguns recortes de 2023). \textbf{Estas razões mantêm o mesmo caráter de limitante ingênuo} discutido na Seção~\ref{cap:resultados:base-geral}: não substituem a verificação de factibilidade do modelo MIP, mas indicam, em primeira aproximação, o regime esperado de cada instância.
+
+\begin{quadro}[h]
+	\centering
+	\caption{Caracterização agregada das 10 instâncias do horizonte de 15 dias.}
+	\resizebox{0.8\textwidth}{!}{\begin{minipage}{\textwidth}
+			\input{tex/0-extras/inst_stats/h15_chapter.tex}
+		\end{minipage}}
+	\label{quad:base-h15}
+	\fautor
+\end{quadro}
+
+\begin{quadro}[h]
+	\centering
+	\caption{Caracterização agregada das 10 instâncias do horizonte de 30 dias.}
+	\resizebox{0.8\textwidth}{!}{\begin{minipage}{\textwidth}
+			\input{tex/0-extras/inst_stats/h30_chapter.tex}
+		\end{minipage}}
+	\label{quad:base-h30}
+	\fautor
+\end{quadro}
+
+\begin{quadro}[h]
+	\centering
+	\caption{Caracterização agregada das 10 instâncias do horizonte de 60 dias.}
+	\resizebox{0.8\textwidth}{!}{\begin{minipage}{\textwidth}
+			\input{tex/0-extras/inst_stats/h60_chapter.tex}
+		\end{minipage}}
+	\label{quad:base-h60}
+	\fautor
+\end{quadro}
+
+\begin{quadro}[h]
+	\centering
+	\caption{Caracterização agregada das 10 instâncias do horizonte de 90 dias.}
+	\resizebox{0.8\textwidth}{!}{\begin{minipage}{\textwidth}
+			\input{tex/0-extras/inst_stats/h90_chapter.tex}
+		\end{minipage}}
+	\label{quad:base-h90}
+	\fautor
+\end{quadro}
+
+\clearpage
+
+\section{Configuração Experimental}
+\label{cap:resultados:config-experimental}
+
+Os experimentos computacionais foram executados no cluster \textit{Euler} do Instituto de Ciências Matemáticas e de Computação (ICMC-USP), equipado com processadores Intel Xeon E5-2670v3 (12 núcleos a 2,5 GHz) e 128 GB de memória RAM por nó. Cada tarefa foi submetida como um \textit{job} PBS com alocação de 4 núcleos e 16 GB de memória RAM.
+
+O ambiente de software utilizou Python 3.12.8, Gurobi 12.0.3 com licença acadêmica e a biblioteca pymoo 0.6.1 para o NSGA-II. O \textit{solver}
+Gurobi foi executado com os parâmetros padrão, com exceção do limite de tempo de 3.600 segundos (1 hora) por ponto da fronteira de Pareto.
+
+\subsection{Instâncias e Horizontes de Planejamento}
+\label{cap:resultados:instancias-horizontes}
+
+A escolha dos horizontes de planejamento avaliados neste trabalho segue o ciclo operacional observado na coordenação da rede de clínicas em estudo. O planejamento das escalas médicas é realizado de forma hierárquica e incremental: um horizonte primário de longo prazo é estabelecido para definição de contratos e capacidade, e horizontes sucessivamente mais curtos são utilizados para refinamento à medida que novas informações de demanda e disponibilidade se tornam disponíveis. Essa prática justifica a avaliação dos métodos em quatro horizontes aninhados, cujo significado operacional é resumido a seguir:
+
+\begin{itemize}
+	\item \textbf{90 dias (trimestral):} horizonte primário de planejamento. Corresponde à janela na qual a coordenação efetua a contratação e distribuição inicial de capacidade, estabelecendo a escala de referência do trimestre.
+	\item \textbf{60 dias (bimestral):} janela de refinamento de médio prazo. É utilizada quando a estimativa de demanda esperada é atualizada com dados mais recentes, permitindo ajustar blocos expressivos da escala sem revisar contratos.
+	\item \textbf{30 dias (mensal):} atualização operacional. Aproxima-se do horizonte em que remanejamentos e ajustes finos começam a ser factíveis sem perturbar compromissos contratuais com os profissionais.
+	\item \textbf{15 dias (quinzenal):} ciclo mais curto de reprogramação, aplicado a alterações emergenciais de demanda ou disponibilidade e à validação da escala imediatamente antes de sua execução.
+\end{itemize}
+
+Além de espelharem a prática operacional, os horizontes escolhidos cobrem granularidades comumente adotadas na literatura de \textit{physician rostering} e impõem níveis crescentes de dificuldade computacional ao modelo MIP, como evidenciado pelos experimentos das seções subsequentes.
+
+Para cada horizonte, foram selecionadas 10 instâncias distribuídas ao longo de 2022 e 2023, divididas em dois conjuntos disjuntos:
+
+\begin{itemize}
+	\item \textbf{Parametrização (2 instâncias por horizonte):} conjunto reduzido, utilizado exclusivamente para selecionar os hiperparâmetros de cada família de método (janela das MIP-heurísticas; tamanho de população, probabilidade de mutação e modo de extensão do NSGA-II). As instâncias foram escolhidas em trimestres bem separados do ano, de modo a capturar sazonalidade sem repetição de padrões de demanda.
+	\item \textbf{Validação (8 instâncias por horizonte):} conjunto principal, utilizado para comparar os métodos após a seleção de hiperparâmetros. As instâncias cobrem todos os trimestres de 2022 e 2023, com distribuição balanceada ao longo do calendário para mitigar vieses sazonais. Os resultados discutidos na Seção~\ref{cap:resultados:comparacao} referem-se exclusivamente a este conjunto.
+\end{itemize}
+
+A separação em dois conjuntos disjuntos garante que o desempenho reportado na fase de validação não esteja condicionado aos mesmos dados usados para ajustar os hiperparâmetros, reduzindo o risco de sobreajuste aos perfis de demanda específicos usados na parametrização. Ao todo, são $4 \times (2 + 8) = 40$ pares (horizonte, instância) utilizados nos experimentos.
+
+O Quadro~\ref{quad:instancias-experimentos} resume a estrutura dos experimentos, e o Quadro~\ref{quad:instancias-datas} cataloga os recortes específicos utilizados em cada conjunto.
+
+\begin{quadro}[h]
+	\centering
+	\caption{Estrutura dos experimentos por horizonte de planejamento.}
+	\resizebox{0.75\textwidth}{!}{\begin{minipage}{\textwidth}
+			\begin{tabular}{|c|M{3.3cm}|M{2.5cm}|M{1.8cm}|M{6cm}|}
+				\hline
+				\textbf{Horizonte} & \textbf{Instâncias (Parametrização)} & \textbf{Instâncias (Validação)} & \textbf{Pontos $\varepsilon$} & \textbf{Métodos avaliados}      \\
+				\hline
+				15 dias            & 2                                    & 8                               & 7                             & RF, Híbrido, NSGA-IIe, NSGA-IIc \\
+				\hline
+				30 dias            & 2                                    & 8                               & 7                             & RF, Híbrido, NSGA-IIe, NSGA-IIc \\
+				\hline
+				60 dias            & 2                                    & 8                               & 7                             & RF, Híbrido, NSGA-IIe, NSGA-IIc \\
+				\hline
+				90 dias            & 2                                    & 8                               & 7                             & RF, Híbrido, NSGA-IIe, NSGA-IIc \\
+				\hline
+			\end{tabular}
+		\end{minipage}}
+
+	\label{quad:instancias-experimentos}
+	\fautor
+\end{quadro}
+
+\begin{quadro}[h]
+	\centering
+	\caption{Catálogo de instâncias por horizonte e conjunto.}
+	\resizebox{0.8\textwidth}{!}{\begin{minipage}{\textwidth}
+			\begin{tabular}{|M{1.7cm}|M{4.7cm}|M{10cm}|}
+				\hline
+				\textbf{Horizonte} & \textbf{Parametrização \newline (2 instâncias)} & \textbf{Validação (8 instâncias)}                                                                     \\
+				\hline
+				15 dias            & 02/01/2022,\ 01/07/2022                & 01/03/2022,\ 01/05/2022,\ 01/09/2022,\ 01/11/2022,\ 01/01/2023,\ 01/03/2023,\ 01/05/2023,\ 01/07/2023 \\
+				\hline
+				30 dias            & 02/01/2022,\ 01/07/2022                & 01/03/2022,\ 01/05/2022,\ 01/09/2022,\ 01/11/2022,\ 01/01/2023,\ 01/03/2023,\ 01/05/2023,\ 01/07/2023 \\
+				\hline
+				60 dias            & 01/04/2022,\ 01/08/2022                & 02/01/2022,\ 01/02/2022,\ 01/06/2022,\ 01/10/2022,\ 01/12/2022,\ 01/02/2023,\ 01/04/2023,\ 01/06/2023 \\
+				\hline
+				90 dias            & 01/04/2022,\ 01/08/2022                & 02/01/2022,\ 01/02/2022,\ 01/06/2022,\ 01/09/2022,\ 01/11/2022,\ 01/01/2023,\ 01/03/2023,\ 01/05/2023 \\
+				\hline
+			\end{tabular}
+		\end{minipage}}
+	\label{quad:instancias-datas}
+	\fautor
+\end{quadro}
+
+\subsection{Métricas de Avaliação}
+\label{cap:resultados:metricas}
+
+Devido à natureza multiobjetivo do problema, a avaliação dos métodos utiliza métricas que capturam tanto a qualidade da fronteira de Pareto aproximada quanto o desempenho computacional. O Quadro \ref{quad:metricas-resultados} descreve os indicadores empregados.
+
+\begin{quadro}[h]
+	\centering
+	\caption{Métricas de avaliação dos experimentos.}
+	\resizebox{0.9\textwidth}{!}{\begin{minipage}{\textwidth}
+			\centering
+			\begin{tabular}{|c|M{11.5cm}|}
+				\hline
+				\textbf{Métrica}      & \textbf{Descrição}                                                                                                                               \\
+				\hline
+				Hipervolume (HV)      & Volume do espaço dominado pela fronteira aproximada em relação a um ponto de referência. Quanto maior, melhor a qualidade da fronteira.          \\ \hline
+				Amplitude $Z_1$       & Diferença entre o maior e o menor valor de exames não atendidos na fronteira ($Z_1^{\max} - Z_1^{\min}$). Mede a cobertura do eixo de cobertura. \\ \hline
+				Amplitude $Z_2$       & Diferença entre o maior e o menor valor de trocas na fronteira ($Z_2^{\max} - Z_2^{\min}$). Mede a cobertura do eixo de estabilidade.            \\ \hline
+				Gap de referência     & Distância relativa entre a fronteira heurística e a fronteira exata, calculada ponto a ponto.                                                    \\ \hline
+				MIP Gap               & Desvio percentual entre o valor objetivo e o melhor limitante inferior reportado pelo Gurobi.                                                    \\ \hline
+				Tempo de execução (s) & Tempo de parede para obtenção de todos os pontos da fronteira.                                                                                   \\ \hline
+				Taxa de factibilidade & Proporção de soluções NSGA-II verificadas como factíveis pelo modelo Gurobi.                                                                     \\ \hline
+			\end{tabular}
+		\end{minipage}}
+	\label{quad:metricas-resultados}
+	\fautor
+\end{quadro}
+
+\section{Resultados do Método Exato}
+\label{cap:resultados:exato}
+Esta seção caracteriza, em isolado, o desempenho do método exato por $\varepsilon$-restrito. O método não possui hiperparâmetros sujeitos a sintonia experimental --- depende apenas das definições padrão do Gurobi 12.0.3 e do limite de tempo de 3.600~s por ponto $\varepsilon$ (Seção~\ref{cap:resultados:config-experimental}) ---, de modo que os resultados a seguir utilizam o conjunto completo das 10 instâncias por horizonte (40 pares horizonte-instância), e não apenas as 8 de validação. As Tabelas~\ref{tab:exato-mipgap} e~\ref{tab:exato-runtime} concentram os indicadores agregados que sustentam a leitura comparativa da Seção~\ref{cap:resultados:comparacao}; o detalhamento por instância e por ponto $\varepsilon$, incluindo fronteiras de Pareto sobrepostas, mapas de calor do gap e diagramas de caixa de tempo, é apresentado no Apêndice~\ref{apendice-cap:exato-detalhe}.
+
+\subsection{Convergência e Gap MIP}
+\label{cap:resultados:exato-gap}
+
+A Tabela~\ref{tab:exato-mipgap} reporta o \textit{MIP gap} médio ao final do limite de tempo de 3.600~s por ponto $\varepsilon$, definido como $\text{MIP	gap} = (z_{\text{best}} - z_{\text{lb}})/|z_{\text{best}}|$, e o número médio de pontos da grade resolvidos até a otimalidade comprovada por instância.
+
+\begin{table}[h]
+	\centering
+	\caption{MIP gap médio do método exato por ponto $\varepsilon$.}
+	\begin{tabular}{M{3cm}M{3cm}M{3cm}}
+		\toprule
+		\textbf{Horizonte} & \textbf{MIP gap médio (\%)} & \textbf{Pontos $\varepsilon$ ótimos} \\
+		\midrule
+		15 dias            & 4{,}10 $\pm$ 8{,}32         & 3 / 7                                \\
+		30 dias            & 42{,}66 $\pm$ 13{,}69       & 0 / 7                                \\
+		60 dias            & 78{,}11 $\pm$ 14{,}73       & 0 / 7                                \\
+		90 dias            & 96{,}80 $\pm$ 6{,}22        & 0 / 7                                \\
+		\bottomrule
+	\end{tabular}
+	\label{tab:exato-mipgap}
+	\fautor
+\end{table}
+
+Apenas o horizonte quinzenal atinge otimalidade comprovada em uma fração relevante dos pontos $\varepsilon$ (3 dos 7, em média); a partir de 30 dias o crescimento combinatório das variáveis $x_{iudt}$ (ordem de $10^6$ em 90 dias) impede a convergência em qualquer ponto da grade. A elevada dispersão observada em 15 dias ($\pm 8{,}32$~pp) é dominada por duas instâncias outlier discutidas no Apêndice~\ref{apendice-cap:exato-detalhe}.
+
+\subsection{Tempo de Execução}
+\label{cap:resultados:exato-runtime}
+
+A Tabela~\ref{tab:exato-runtime} consolida o tempo médio por ponto $\varepsilon$, o número médio de pontos no limite de tempo e o tempo total da fronteira completa.
+
+\begin{table}[h]
+	\centering
+	\caption{Tempo de execução do método exato por ponto $\varepsilon$ e tempo total da fronteira.}
+	\begin{tabular}{M{2.5cm}M{3.5cm}M{3cm}M{3.5cm}}
+		\toprule
+		\textbf{Horizonte} & \textbf{Tempo médio por ponto $\varepsilon$ (s)} & \textbf{Pontos no limite de tempo} & \textbf{Tempo total da fronteira (s)} \\
+		\midrule
+		15 dias            & 2.702 $\pm$ 1.192                                & 3{,}9 / 7                          & 18.911 $\pm$ 4.788                    \\
+		30 dias            & 3.600 $\pm$ 0                                    & 7{,}0 / 7                          & 25.201 $\pm$ 0                        \\
+		60 dias            & 3.603 $\pm$ 10                                   & 7{,}0 / 7                          & 25.219 $\pm$ 27                       \\
+		90 dias            & 3.605 $\pm$ 14                                   & 7{,}0 / 7                          & 25.233 $\pm$ 41                       \\
+		\bottomrule
+	\end{tabular}
+	\label{tab:exato-runtime}
+	\fautor
+\end{table}
+
+O tempo total se aproxima do produto $7 \times 3.600 = 25.200$~s a partir de 30 dias, confirmando que todos os pontos $\varepsilon$ saturam o limite de tempo sem convergência. Em 15 dias, o tempo total inferior ($\sim 18.911$~s) reflete a finalização antecipada dos pontos resolvidos à otimalidade.
+
+
+\subsection{Implicações para a Análise Comparativa}
+\label{cap:resultados:exato-implicacoes}
+
+A caracterização do método exato motiva duas leituras distintas das métricas comparativas apresentadas na Seção~\ref{cap:resultados:comparacao}. No horizonte de 15 dias, o exato fornece uma fronteira de Pareto verdadeira (ou quase verdadeira), de modo que o hipervolume e o \textit{gap} de referência das demais famílias podem ser interpretados como medidas absolutas de qualidade. Nos horizontes de 30, 60 e 90 dias, a fronteira do exato é, ela própria, sub-ótima, e o hipervolume relativo passa a representar um indicador de proximidade à melhor fronteira conhecida no mesmo limite de tempo, e não à fronteira ótima global.
+
+Adicionalmente, a transição de regime entre os horizontes de 15 e 30 dias estabelece, para o problema em estudo, o ponto a partir do qual o uso de heurísticas torna-se necessário em ambientes operacionais com restrição de tempo. Para o tomador de decisão da rede de clínicas, isso significa que o ciclo quinzenal de reprogramação pode ser tratado por método exato, enquanto os horizontes maiores (mensal, bimestral e trimestral) requerem necessariamente abordagens aproximadas, justificando a investigação das MIP-heurísticas e das meta-heurísticas conduzida nas seções subsequentes.
+
+\section{Parametrização}
+\label{cap:resultados:parametrizacao}
+
+Antes da execução dos experimentos de validação, foi conduzida uma fase de parametrização para definir as configurações utilizadas em cada família de método. As três famílias avaliadas neste trabalho recebem tratamentos distintos nesta fase: o método exato por $\varepsilon$-restrito não possui hiperparâmetros próprios sujeitos a sintonia, atuando como referência para os demais; as MIP-heurísticas (Relax-and-Fix e Híbrido) requerem a seleção do tamanho da janela temporal e da política de sobreposição; e as meta-heurísticas NSGA-II (Estendido e Compacto) requerem a definição de tamanho de população, probabilidade de mutação e modo de extensão. Conforme descrito na Seção~\ref{cap:resultados:instancias-horizontes}, a fase utilizou as 2 instâncias de parametrização por horizonte (8 instâncias ao todo), representativas da variabilidade sazonal e de demanda dos dados reais. O objetivo é identificar a configuração que produz a melhor qualidade de fronteira de Pareto dentro do limite de tempo disponível, para posterior comparação com o método exato na fase de validação (Seção~\ref{cap:resultados:comparacao}).
+
+\subsection{Método Exato (referência)}
+\label{cap:resultados:param-exato}
+
+O método exato por $\varepsilon$-restrito é a única família para a qual não há configuração de hiperparâmetros sujeita a investigação experimental: o seu funcionamento depende apenas das definições padrão do \textit{solver} Gurobi 12.0.3 e do limite de tempo de 3.600 segundos por ponto da fronteira, descritos na Seção~\ref{cap:resultados:config-experimental}. A grade de valores de $\varepsilon$ utilizada para enumerar os pontos da fronteira é composta por sete valores fixos por instância, obtidos por otimização lexicográfica que determina os limitantes mínimo e máximo do número de trocas $Z_2$ na instância considerada. Essa mesma grade é compartilhada com todas as MIP-heurísticas, garantindo comparabilidade ponto a ponto entre as fronteiras geradas pelos diferentes métodos sobre uma mesma instância.
+
+Por consequência, os resultados do método exato cumprem dois papéis distintos na análise comparativa apresentada na
+Seção~\ref{cap:resultados:comparacao}. Em horizontes nos quais o Gurobi atinge otimalidade, o exato fornece a fronteira de Pareto verdadeira, contra a qual a qualidade dos métodos heurísticos pode ser medida em termos absolutos. Em horizontes nos quais o limite de tempo é insuficiente para convergência, o exato fornece uma fronteira sub-ótima cuja qualidade decresce com o horizonte, fornecendo um limitante superior para a qualidade alcançável pelos demais métodos no mesmo limite de tempo. Esta distinção é central para a interpretação das métricas de hipervolume e gap de referência apresentadas adiante.
+
+\subsection{MIP-Heurísticas}
+\label{cap:resultados:param-mip}
+
+Para as MIP-heurísticas, o parâmetro principal é o tamanho da janela temporal de decomposição, expresso como fração do horizonte total. Foram avaliadas seis variantes do Relax-and-Fix (RF) e seis do método híbrido RF+Fix-and-Optimize (FO), combinando tamanhos de janela de 25\%, 50\% e 75\% do horizonte, com e sem sobreposição entre janelas consecutivas (0 ou 2 períodos). A Figura \ref{fig:param-mip-barchart} apresenta o gap de referência médio em relação ao método exato para cada configuração, agregando as instâncias de parametrização no horizonte de 15 dias, em que a comparação com o método exato é mais confiável (no horizonte de 15 dias o Gurobi atinge otimalidade ou \textit{gaps} inferiores a 1\%).
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{images/param_mip_barchart.png}
+	\caption{Gap de referência médio por configuração de janela, horizonte de 15 dias.}
+	\label{fig:param-mip-barchart}
+	\fautor
+\end{figure}
+
+Com base nos resultados de parametrização, a configuração \textbf{RF com janela de 75\% e sobreposição de 2 períodos} (\texttt{rfw75\_rfo2}) foi selecionada para o Relax-and-Fix (gap médio de 3{,}0\%) e a configuração \textbf{Híbrido com janela de 50\% e sobreposição de 2 períodos} (\texttt{rfw50\_rfo2\_fow50}) foi selecionada para o método híbrido (gap médio de 2{,}9\%), equilibrando qualidade de solução e tempo de execução. Janelas maiores reduzem a fragmentação do problema, permitindo ao solver capturar dependências temporais mais longas em cada subproblema; a sobreposição de dois períodos entre janelas consecutivas suaviza as transições, evitando descontinuidades na fixação das variáveis $w_{iud}$.
+\subsection{Meta-Heurísticas (NSGA-II)}
+\label{cap:resultados:param-nsga2}
+
+Para o NSGA-II, foram avaliadas combinações de tamanho de população ($N \in \{50, 100, 200\}$), probabilidade de mutação ($p_m \in \{0{,}01, 0{,}03,0{,}05\}$) e modo de melhoria evolutiva: com todas as extensões habilitadas (\textit{allon}), sem busca local (\textit{nols}) e sem nenhuma extensão (\textit{noenhance}). As avaliações foram conduzidas separadamente para o NSGA-II Estendido (representação binária) e para o NSGA-II Compacto
+(representação inteira).
+
+A métrica primária de avaliação é o hipervolume (HV) da fronteira aproximada, normalizado pelo HV do método exato na mesma instância. A Figura
+\ref{fig:param-nsga-heatmap} apresenta os mapas de calor do HV relativo por tamanho de população e probabilidade de mutação, separados por modo de
+extensão, para cada variante do NSGA-II.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{images/param_nsga2_heatmap.png}
+	\caption{Mapa de calor do hipervolume relativo ao método exato, por configuração de população e mutação (NSGA-II Compacto na linha superior, Estendido na linha inferior; colunas: \textit{allon}, \textit{nols}, \textit{noenhance}).}
+	\label{fig:param-nsga-heatmap}
+	\fautor
+\end{figure}
+
+A análise dos mapas evidencia que o modo \textit{allon} supera consistentemente os modos \textit{nols} e \textit{noenhance}, em ambas as representações. A representação compacta apresenta HV relativo entre 0{,}67 e 0{,}72 no modo \textit{allon}, enquanto a representação estendida atinge valores de 0{,}47 a 0{,}51, refletindo o maior número de gerações viáveis dentro do limite de tempo quando a dimensionalidade do cromossomo é reduzida. A variação em relação ao tamanho da população e probabilidade de mutação é relativamente pequena (inferior a 5\% em termos absolutos).
+
+Com base nos resultados da parametrização, a configuração $N=50$, $p_m=0{,}03$, modo \textit{allon} foi selecionada para o \textbf{NSGA-II Estendido} (HV relativo médio 0{,}510) e a configuração $N=50$, $p_m=0{,}05$, modo \textit{allon} foi selecionada para o \textbf{NSGA-II Compacto} (HV relativo médio 0{,}715).
+
+\section{Análise Comparativa}
+\label{cap:resultados:comparacao}
+
+Nesta seção, são apresentados os resultados dos experimentos de validação entre os cinco métodos avaliados: método exato por $\varepsilon$-restrito (\textbf{Exato}), Relax-and-Fix (\textbf{RF}), método híbrido RF+FO (\textbf{Híbrido}), NSGA-II Estendido (\textbf{NSGA-IIe}) e NSGA-II Compacto (\textbf{NSGA-IIc}). Os experimentos foram conduzidos nas 8 instâncias de validação por horizonte de planejamento (15, 30, 60, 90 dias) catalogadas no Quadro~\ref{quad:instancias-datas}, totalizando 32 pares instância-método por método. As configurações de hiperparâmetros das MIP-heurísticas e do NSGA-II são aquelas selecionadas na fase de parametrização (Seção~\ref{cap:resultados:parametrizacao}); o método exato é executado em sua configuração padrão descrita na Seção~\ref{cap:resultados:param-exato}, atuando como referência para a avaliação dos demais métodos. Todas as figuras e tabelas comparativas a seguir incluem o método exato como linha de base, exceto pelas figuras de parametrização (Figuras~\ref{fig:param-mip-barchart}~e~\ref{fig:param-nsga-heatmap}), nas quais ele aparece implicitamente como referência para o cálculo dos \textit{gaps} e do hipervolume relativo.
+
+\subsection{Fronteiras de Pareto}
+\label{cap:resultados:pareto}
+
+A Figura \ref{fig:pareto-todos} apresenta uma visão comparativa das fronteiras de Pareto aproximadas obtidas pelos cinco métodos em uma instância representativa de cada horizonte de planejamento. O eixo horizontal representa o número total de exames não atendidos ($Z_1$) e o eixo vertical o número total de trocas de clínica ($Z_2$), ambos com orientação de minimização.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\textwidth]{images/pareto_comparativo_todos_horizontes.png}
+	\caption{Fronteiras de Pareto para instâncias representativas em cada horizonte.}
+	\label{fig:pareto-todos}
+	\fautor
+\end{figure}
+
+Observa-se que, no horizonte de 15 dias, as cinco curvas se aproximam da fronteira ótima determinada pelo método exato, com maior dispersão para as variantes do NSGA-II no trecho de $Z_1$ elevado. Em horizontes maiores (60 e 90 dias), o método exato não atinge otimalidade no tempo disponível, o que resulta em uma fronteira sub-ótima e, em consequência, em pontos heurísticos que ocasionalmente dominam pontos do exato.
+
+\subsection{Qualidade das Soluções}
+\label{cap:resultados:qualidade}
+
+A Tabela \ref{tab:hipervolume} apresenta o hipervolume médio das fronteiras de Pareto obtidas pelos cinco métodos, para cada horizonte de planejamento. O ponto de referência utilizado no cálculo do hipervolume é o vetor de piores valores observados na fronteira do método exato para cada instância, garantindo comparabilidade entre métodos. Os valores foram normalizados pelo hipervolume do método exato (referência $= 1{,}000$) para facilitar a interpretação. Valores superiores a 1{,}000 ocorrem em horizontes em que o Gurobi não atinge otimalidade no tempo limite, de modo que a fronteira de referência fica sub-ótima e pode ser dominada pontualmente pelos métodos heurísticos.
+
+
+\begin{table}[h]
+	\centering
+	\caption{Hipervolume relativo ao método exato.}
+	\resizebox{0.9\textwidth}{!}{\begin{minipage}{\textwidth}
+			\centering
+			\begin{tabular}{ccccc}
+				\toprule
+				\textbf{Método} & \textbf{15 dias}             & \textbf{30 dias}             & \textbf{60 dias}             & \textbf{90 dias}                 \\
+				\midrule
+				Exato           & 1{,}000\newline\(\pm\) 0{,}000 & 1{,}000\newline\(\pm\) 0{,}000 & 1{,}000\newline\(\pm\) 0{,}000 & 1{,}000\newline\(\pm\) 0{,}000     \\
+				RF              & 0{,}984\newline\(\pm\) 0{,}017 & 0{,}852\newline\(\pm\) 0{,}028 & 1{,}158\newline\(\pm\) 0{,}093 & 4{,}213\newline\(\pm\) 5{,}158     \\
+				Híbrido         & 0{,}996\newline\(\pm\) 0{,}010 & 1{,}008\newline\(\pm\) 0{,}039 & 0{,}938\newline\(\pm\) 0{,}139 & 1{,}941\newline\(\pm\) 3{,}233     \\
+				NSGA-IIe        & 0{,}279\newline\(\pm\) 0{,}121 & 0{,}023\newline\(\pm\) 0{,}050 & 0{,}736\newline\(\pm\) 0{,}172 & 10{,}190\newline\(\pm\) 21{,}618   \\
+				NSGA-IIc        & 0{,}382\newline\(\pm\) 0{,}118 & 0{,}217\newline\(\pm\) 0{,}156 & 1{,}039\newline\(\pm\) 0{,}227 & 12{,}888 \newline \(\pm\) 26{,}976 \\
+				\bottomrule
+			\end{tabular}
+		\end{minipage}}
+	\label{tab:hipervolume}
+	\fautor
+\end{table}
+
+Os resultados indicam que o método Híbrido mantém HV próximo ao do exato nos horizontes de 15 e 30 dias, enquanto o NSGA-II Compacto supera o Estendido em todos os horizontes em razão de sua representação reduzida, que permite maior número de gerações dentro do limite de tempo. Para horizontes longos, a alta variância dos valores (especialmente em 90 dias) reflete a instabilidade da referência construída a partir do exato não convergido.
+
+A Tabela \ref{tab:gap-referencia} apresenta o gap de referência médio dos métodos MIP-heurísticos em relação ao melhor limitante inferior reportado pelo método exato para o mesmo ponto $\varepsilon$. O gap de referência $\Delta_{\text{ref}}$ é calculado como $\Delta_{\text{ref}} = |f(x_h) - \underline{f}^\ast| / |f(x_h)| \cdot 100$, onde $f(x_h)$ é o valor objetivo da solução heurística e $\underline{f}^\ast$ o melhor limitante reportado pelo Gurobi.
+
+\begin{table}[h]
+	\centering
+	\caption{Gap de referência médio dos métodos MIP-heurísticos em relação ao exato.}
+	\resizebox{0.9\textwidth}{!}{\begin{minipage}{\textwidth}
+			\centering
+			\begin{tabular}{M{2.8cm}M{2.9cm}M{2.9cm}M{2.9cm}M{3cm}}
+				\toprule
+				\textbf{Método} & \textbf{15 dias}  & \textbf{30 dias}   & \textbf{60 dias}   & \textbf{90 dias}   \\
+				\midrule
+				RF              & 6{,}4 $\pm$ 7{,}3 & 52{,}2 $\pm$ 7{,}8 & 80{,}2 $\pm$ 8{,}3 & 97{,}1 $\pm$ 2{,}6 \\
+				Híbrido         & 6{,}7 $\pm$ 8{,}6 & 44{,}2 $\pm$ 7{,}6 & 81{,}0 $\pm$ 5{,}9 & 97{,}0 $\pm$ 3{,}3 \\
+				\bottomrule
+			\end{tabular}
+		\end{minipage}}
+	\label{tab:gap-referencia}
+	\fautor
+\end{table}
+
+
+Os valores elevados de gap para horizontes $\geq 30$ dias refletem a qualidade do limitante inferior produzido pelo Gurobi na janela de 1~hora por ponto $\varepsilon$, e não necessariamente a qualidade intrínseca das soluções heurísticas. Como o método exato também atinge o limite de tempo sem convergir (Tabela~\ref{tab:runtime}), o gap reportado é um limitante superior da distância ao ótimo global. Para o horizonte de 15 dias, em que o exato encontra soluções ótimas ou com gap $< 1\%$, os gaps médios de 6--7\% indicam boa qualidade relativa das heurísticas.
+
+A aparente superioridade do Relax-and-Fix sobre o método Híbrido no horizonte de 60 dias (HV relativo de 1{,}158 vs.\ 0{,}938, Tabela~\ref{tab:hipervolume}) decorre da divisão de tempo adotada no modo híbrido: a fase construtiva RF ocupa 25\% do limite de tempo por ponto $\varepsilon$ ($\approx 900$~s), e a fase de refinamento Fix-and-Optimize (FO) ocupa os 75\% restantes ($\approx 2.700$~s). No horizonte de 60 dias, os 900~s disponíveis para a fase RF frequentemente são insuficientes para construir uma solução incumbente de qualidade, tornando o ponto de partida da fase FO fraco ou inviável. Em contraste, o RF puro dispõe de 3.600~s para a decomposição completa, o que explica a inversão de desempenho neste horizonte.
+
+As soluções geradas pelo NSGA-II foram verificadas quanto à factibilidade mediante resolução do modelo Gurobi com as variáveis fixadas nos valores propostos pela meta-heurística. A Tabela \ref{tab:factibilidade-nsga2} apresenta a taxa de factibilidade global (satisfação de todas as restrições \ref{eq:r1}--\ref{eq:r6}) e a taxa de violação da restrição de cobertura mínima (restrições \ref{eq:r5}) para cada horizonte.
+
+\begin{table}[h]
+	\centering
+	\caption{Factibilidade das soluções NSGA-II: global $vs.$ violação da restrição de cobertura mínima.}
+	\resizebox{0.9\textwidth}{!}{\begin{minipage}{\textwidth}
+			\centering
+			\begin{tabular}{M{2.8cm}M{2.9cm}M{2.9cm}M{2.9cm}M{3cm}}
+				\toprule
+				\textbf{Método} & \textbf{15 dias}    & \textbf{30 dias}    & \textbf{60 dias}    & \textbf{90 dias}    \\
+				\midrule
+				NSGA-IIe        & 0{,}00 $\pm$ 0{,}00 & 0{,}00 $\pm$ 0{,}00 & 0{,}00 $\pm$ 0{,}00 & 0{,}00 $\pm$ 0{,}00 \\
+				NSGA-IIc        & 0{,}00 $\pm$ 0{,}00 & 0{,}00 $\pm$ 0{,}00 & 0{,}00 $\pm$ 0{,}00 & 0{,}00 $\pm$ 0{,}00 \\
+				\bottomrule
+			\end{tabular}
+		\end{minipage}}
+	\label{tab:factibilidade-nsga2}
+	\fautor
+\end{table}
+
+A taxa de factibilidade global nula indica que todas as soluções NSGA-II violam ao menos a restrição \ref{eq:r5} (cobertura mínima). A análise por variante revela, porém, distinções relevantes: no NSGA-II Estendido, as restrições estruturais \ref{eq:r1}--\ref{eq:r4} são satisfeitas na totalidade das soluções, e os valores de $Z_1$ e $Z_2$ foram verificados por resolução Gurobi com variáveis fixadas, sem discrepância; no NSGA-II Compacto, 89{,}8\% das soluções satisfazem \ref{eq:r1}--\ref{eq:r4}, enquanto 10{,}2\% apresentam violação da restrição de capacidade de sala (\ref{eq:r4}), concentradas na clínica U06, turno vespertino, indicando uma limitação do decodificador de cromossomo compacto nesta configuração específica. Em ambas as variantes, a restrição \ref{eq:r5} é violada em 4--6\% das combinações clínica--período, com concentração no turno vespertino.
+
+\noindent\textbf{Nota metodológica.} Os resultados de hipervolume e fronteira de Pareto do NSGA-II (Tabelas~\ref{tab:hipervolume} e~\ref{tab:factibilidade-nsga2}) são apresentados em paralelo aos métodos MIP exclusivamente para contextualização. Dado que nenhuma solução NSGA-II satisfaz \ref{eq:r5}, e uma fração das soluções compactas também viola \ref{eq:r4}, esses resultados não constituem comparação direta com métodos que garantem factibilidade. A análise evolutiva deve ser lida isoladamente, com ênfase na qualidade das soluções dentro da família de meta-heurísticas.
+
+\subsection{Desempenho Computacional}
+\label{cap:resultados:desempenho}
+
+A Tabela \ref{tab:runtime} apresenta o tempo médio total de execução de cada método por horizonte. Para os métodos MIP, o tempo inclui a resolução de todos os 7 pontos $\varepsilon$ da fronteira, cada um limitado a 3.600 segundos. Para o NSGA-II, o tempo total corresponde ao limite de 3.600 segundos por instância, já que uma única execução produz a fronteira aproximada completa.
+
+\begin{table}[!htb]
+	\centering
+	\caption{Tempo total médio de execução por método e horizonte.}
+	\resizebox{0.95\textwidth}{!}{\begin{minipage}{\textwidth}
+			\centering
+			\begin{tabular}{M{2.5cm}M{2.75cm}M{2.75cm}M{2.75cm}M{2.75cm}}
+				\toprule
+				\textbf{Método} & \textbf{15 dias}   & \textbf{30 dias} & \textbf{60 dias}   & \textbf{90 dias} \\
+				\midrule
+				Exato           & 20.124 $\pm$ 3.862 & 25.201 $\pm$ 0   & 25.222 $\pm$ 29    & 25.233 $\pm$ 44  \\
+				RF              & 15.667 $\pm$ 1.905 & 14.879 $\pm$ 999 & 13.112 $\pm$ 1.367 & 11.554 $\pm$ 36  \\
+				Híbrido         & 20.509 $\pm$ 3.281 & 25.201 $\pm$ 0   & 25.227 $\pm$ 34    & 25.231 $\pm$ 34  \\
+				NSGA-IIe        & 3.389 $\pm$ 121    & 3.230 $\pm$ 216  & 2.861 $\pm$ 399    & 2.109 $\pm$ 200  \\
+				NSGA-IIc        & 3.569 $\pm$ 24     & 3.537 $\pm$ 24   & 3.466 $\pm$ 61     & 3.407 $\pm$ 70   \\
+				\bottomrule
+			\end{tabular}
+		\end{minipage}}
+	\label{tab:runtime}
+	\fautor
+\end{table}
+
+Os tempos dos métodos MIP (Exato, RF, Híbrido) acompanham a soma dos 7 limites de 3.600 segundos (25.200 s) nos horizontes $\geq 30$ dias, indicando que o \textit{solver} atinge o limite de tempo em todos os pontos $\varepsilon$ sem convergência. O Relax-and-Fix apresenta o menor tempo total por reduzir a dimensão do subproblema em cada janela. As variantes do NSGA-II, por construção, são limitadas a 3.600 segundos por instância, representando uma redução de aproximadamente 7 vezes no tempo total em relação aos métodos MIP.
+
+A Figura \ref{fig:escalabilidade} ilustra a escalabilidade dos métodos em função do horizonte de planejamento. Observa-se que os métodos MIP permanecem em regime de tempo limite, enquanto o NSGA-II mantém tempo aproximadamente constante pelo critério de parada por tempo.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=12cm]{images/escalabilidade_metodos.png}
+	\caption{Escalabilidade dos métodos em função do horizonte de planejamento.}
+	\label{fig:escalabilidade}
+	\fautor
+\end{figure}
+
+\subsection{Discussão dos Resultados}
+\label{cap:resultados:discussao}
+
+A análise conjunta dos resultados permite extrair quatro observações principais sobre o problema e os métodos avaliados.
+
+Em primeiro lugar, a \textbf{dificuldade computacional do modelo exato} cresce acentuadamente com o horizonte de planejamento. Para 15 dias, o Gurobi atinge otimalidade ou \textit{gap} inferior a 1\% em todos os pontos $\varepsilon$; a partir de 30 dias, o \textit{solver} atinge o limite de tempo em cada ponto sem convergência, como evidenciado pelos tempos totais próximos a 25.200 s (Tabela~\ref{tab:runtime}) e pelos \textit{gaps} de referência acima de 40\% (Tabela~\ref{tab:gap-referencia}). Isso motiva diretamente o uso de heurísticas em contextos operacionais reais, nos quais o horizonte típico é de 60 ou 90 dias.
+
+Em segundo lugar, entre as \textbf{MIP-heurísticas}, o método Híbrido (Relax-and-Fix seguido de Fix-and-Optimize) supera consistentemente o Relax-and-Fix isolado em qualidade de hipervolume nos horizontes curtos, embora ao custo de tempo total similar ao do exato. O Relax-and-Fix puro, por sua vez, é aproximadamente $30$--$55\%$ mais rápido e mantém HV relativo de 0{,}85--0{,}98 nos horizontes de 15 e 30 dias, constituindo uma alternativa viável quando o tempo é restritivo.
+
+Em terceiro lugar, as variantes do \textbf{NSGA-II} apresentam um \textit{trade-off} claro entre representação e número de gerações efetivas. A representação compacta ($w_{id}$) permite ao NSGA-IIc executar centenas de gerações dentro dos 3.600 segundos, produzindo HV relativo superior ao da representação binária ($x_{iudt}$) em todos os horizontes. No horizonte de 60 dias, o NSGA-IIc apresenta HV relativo de 1{,}039 --- valor superior à referência exata. Essa aparente vantagem, contudo, não deve ser interpretada como superioridade da meta-heurística: o método exato neste horizonte apresenta MIP gap médio de 78{,}1\% (Tabela~\ref{tab:exato-mipgap}), de modo que a fronteira de referência é fortemente sub-ótima. O NSGA-IIc supera uma referência degradada, não a fronteira ótima global.
+
+Em quarto lugar, a verificação estrita de factibilidade indica que todas as soluções NSGA-II violam ao menos a restrição \ref{eq:r5} (cobertura mínima). No NSGA-II Estendido, as restrições estruturais \ref{eq:r1}--\ref{eq:r4} são integralmente satisfeitas; no NSGA-II Compacto, 10{,}2\% das soluções apresentam adicionalmente violação de \ref{eq:r4}, associada a uma limitação do decodificador de cromossomo compacto para a clínica U06. Essas limitações do mecanismo de reparo são relevantes para uso prático da meta-heurística e apontam para trabalhos futuros focados em operadores de reparo de cobertura e na correção de \ref{eq:r4} no cromossomo compacto.
+
+Por fim, quando considerado o aspecto operacional, a redução da dimensionalidade do cromossomo e o uso de operadores específicos para a estrutura temporal do problema (cruzamento por blocos diários, realocação de \textit{slot}) mostraram-se decisivos para o desempenho do NSGA-II. A versão Compacta, combinada com os mecanismos da variante Estendida (diversidade adaptativa, evolução em duas fases e inicialização enviesada para extremos), oferece o melhor compromisso entre qualidade e tempo dentre as meta-heurísticas avaliadas.

@@ -1,0 +1,84 @@
+% Creating a simple Title Page in Beamer
+\documentclass[xcolor={dvipsnames}, 10pt, brazil]{beamer}
+
+\input{customizacoes}
+
+% Informações do documento
+\title[Otimização Inteira para Alocação de Médicos]{Técnicas de Otimização Inteira Aplicadas à Alocação de Médicos em Redes de Unidades de Diagnóstico por Imagem}
+% \subtitle{Subtítulo Opcional}
+\author[Thiago Mariotti]{Thiago Rafael Mariotti Claudio}
+\institute[USP]{Universidade de São Paulo}
+\date{abril de 2025}
+
+% Definir o nome do orientador
+\newcommand{\advisorname}{\textbf{Orientadora:}  Profª. Drª. Maristela Oliveira dos Santos}
+
+\begin{document}
+
+% Slide (frame) de título
+\begin{frame}
+    \titlepage
+\end{frame}
+
+
+% Sumário
+\begin{frame}[t]
+    \frametitle{Sumário}
+    \tableofcontents
+\end{frame}
+
+\include{sections/1-intro}
+\include{sections/2-revisao}
+\include{sections/3-modelagem}
+\include{sections/4-testes}
+\include{sections/5-conclusao}
+
+% Seção de Referências
+%\section{Referências}{}
+% Slide da seção de Referências
+\begin{frame}[t, allowframebreaks]
+
+    \frametitle{Referências}
+    
+    \bibliography{bibliografia}
+\end{frame}
+
+\begin{frame}[t, allowframebreaks]
+
+    \frametitle{Agradecimentos}
+
+
+    \vspace{1cm}
+
+    \begin{center}
+    Agradeço aos órgãos \textbf{CNPq (164616/2024-1)} e \textbf{CAPES (88887.149213/2025-00)} pelo apoio financeiro para desenvolvimento da presente pesquisa.
+    
+    \vspace{0.5cm}
+
+    \begin{minipage}[t]{0.475\textwidth}
+        \begin{figure}
+            \centering
+            \includegraphics[height=2.5cm]{img/capes-logo-transparente.png}
+            %\caption{Agenda do médico}
+            \label{fig:capes-logo}
+        \end{figure}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.475\textwidth}
+        \begin{figure}
+            \centering
+            \includegraphics[height=3cm]{img/cnpq-logo-transparente.png}
+            %\caption{Ocupação de Salas}
+            \label{fig:cnpq-logo}
+        \end{figure}
+    \end{minipage}
+    
+    \end{center}
+    
+\end{frame}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\end{document}

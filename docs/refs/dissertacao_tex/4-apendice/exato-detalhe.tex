@@ -1,0 +1,210 @@
+Este apêndice complementa a Seção~\ref{cap:resultados:exato} com o detalhamento, por instância e por ponto \(\varepsilon\), do método exato. Para cada um dos quatro horizontes, é apresentada uma tabela com os 7 pontos \(\varepsilon\) nas colunas e as 10 instâncias nas linhas; em cada célula, reporta-se o terno \(Z_1\) / gap (\%) / tempo (s).
+
+Valores em negrito indicam pontos resolvidos até a otimalidade comprovada; o símbolo \(^{\dagger}\) assinala pontos cuja execução atingiu o limite de tempo de 3.600~s; e a notação \emph{n/f} (não factível) é utilizada quando o \textit{solver} encerra o orçamento sem encontrar nenhuma solução factível para o ponto \(\varepsilon\). Cada tabela é acompanhada de três figuras: (i) a sobreposição das fronteiras de Pareto das 10 instâncias, (ii) um mapa de calor do MIP gap (instâncias~\(\times\)~pontos \(\varepsilon\)) e (iii) um diagrama de caixa do tempo de execução por ponto \(\varepsilon\).
+
+\section{Horizonte de 15 dias}
+\label{apendice:exato-h15}
+
+No horizonte de 15 dias, observam-se dois regimes distintos de comportamento entre as instâncias. Sete das 10 instâncias atingem otimalidade comprovada nos pontos \(\varepsilon\) extremos (próximos ao mínimo de \(Z_1\) e ao mínimo de \(Z_2\)), com tempos de execução tipicamente abaixo de 2.000~s. Os pontos intermediários da grade (\(\varepsilon_2\) a \(\varepsilon_4\)) concentram a maior parte dos casos não convergentes, com gaps tipicamente entre 1\% e 7\%. Duas instâncias \textit{outlier} (\textit{2023mar01} e \textit{2023jul01}) destoam do padrão: nelas, o \textit{solver} sequer encontra solução factível em \(\varepsilon_1\) ou apresenta gap acima de 30\% nos pontos centrais, sugerindo perfis de demanda particularmente apertados em relação à oferta de salas. Essas instâncias deslocam para cima a média e o desvio padrão reportados na Tabela~\ref{tab:exato-mipgap} e respondem pela maior parte da dispersão observada.
+
+A figura \ref{fig:exato-pareto-15dias} apresenta a sobreposição das fronteiras de Pareto das 10 instâncias para o horizonte de 15 dias. Para essa janela de tempo, observa-se o padrão esperado de fronteiras decrescentes, com \(Z_2\) diminuindo à medida que \(Z_1\) aumenta. A forma das fronteiras é relativamente suave, sem grandes saltos ou irregularidades, o que sugere que o método exato consegue explorar de forma eficaz a região próxima à fronteira ótima. A dispersão entre as fronteiras das diferentes instâncias é moderada, indicando que os perfis sazonais de demanda em 2022 e 2023 não geram variações extremas na relação entre \(Z_1\) e \(Z_2\) para esse horizonte.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.69\textwidth]{images/exato_pareto_overlay_15days.png}
+	\caption{Fronteiras de Pareto sobrepostas no horizonte de 15 dias.}
+	\label{fig:exato-pareto-15dias}
+	\fautor
+\end{figure}
+
+O mapa de calor, presente em Figura~\ref{fig:exato-heatmap-15dias}, sintetiza a distribuição dos gaps MIP por instância e ponto \(\varepsilon\). Os pontos \(\varepsilon_1\) e \(\varepsilon_7\) apresentam uma concentração de gaps próximos a zero, refletindo os casos resolvidos até a otimalidade comprovada. Já os pontos intermediários exibem uma maior variabilidade, com alguns casos apresentando gaps acima de 5\%, o que evidencia a dificuldade de convergência para essas configurações.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.64\textwidth]{images/exato_mipgap_heatmap_15days.png}
+	\caption{Mapa de calor do MIP gap no horizonte de 15 dias.}
+	\label{fig:exato-heatmap-15dias}
+	\fautor
+\end{figure}
+
+O diagrama de caixa do tempo de execução por ponto \(\varepsilon\), apresentado na Figura~\ref{fig:exato-runtime-15dias}, mostra que os tempos de execução variam significativamente entre os pontos da grade. Os pontos extremos (\(\varepsilon_1\) e \(\varepsilon_7\)) apresentam tempos menores, enquanto os pontos intermediários valores mais elevados, com alguns casos atingindo o limite de tempo. A presença de outliers nos pontos intermediários sugere que, para certas instâncias, o método exato enfrenta dificuldades significativas para encontrar soluções factíveis ou para comprovar a otimalidade dentro do limite de tempo estabelecido. Apesar disso, observa-se alta variabilidade nos pontos mais extremos, indicativo de que o padrão de sazonalidade de demanda pode influenciar fortemente a dificuldade de resolução mesmo para configurações mais restritivas ou mais relaxadas.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.65\textwidth]{images/exato_runtime_boxplot_15days.png}
+	\caption{Tempo de execução por ponto \(\varepsilon\) no horizonte de 15 dias.}
+	\label{fig:exato-runtime-15dias}
+	\fautor
+\end{figure}
+
+A Tabela~\ref{tab:exato-triplet-15dias} apresenta os resultados completos por instância e ponto \(\varepsilon\) no horizonte de 15 dias.
+
+\clearpage
+
+% Tabela
+\begin{sidewaystable}[p]
+	\centering
+	\caption{Resultados por ponto \(\varepsilon\) e instância, horizonte de 15 dias.}
+	\label{tab:exato-triplet-15dias}
+	\resizebox{\textheight}{!}{\input{tex/0-extras/exact_per_epsilon/triplet_15days.tex}}
+	\fautor
+\end{sidewaystable}
+
+\clearpage
+
+\section{Horizonte de 30 dias}
+\label{apendice:exato-h30}
+
+A passagem do horizonte quinzenal para o mensal marca uma ruptura qualitativa no comportamento do método exato. Nenhum dos 70 pontos \(\varepsilon\) é resolvido até a otimalidade comprovada, e todos atingem o limite de tempo de 3.600~s. A particularidade deste horizonte está na frequência com que o \textit{solver} encerra o tempo sem encontrar nenhuma solução factível: 8 das 10 instâncias terminam em situação \emph{n/f} no ponto \(\varepsilon_1\) (o mais restritivo em \(Z_2\)), refletindo a dificuldade do procedimento de \textit{branch-and-bound} em construir uma incumbente respeitando simultaneamente a restrição lexicográfica de \(Z_2\) mínimo e a cobertura mínima C5. Para os pontos \(\varepsilon_2\) a \(\varepsilon_7\), o gap médio cresce de forma aproximadamente linear com a posição na grade, evidenciando que a relaxação \(\varepsilon\) não é, por si só, suficiente para tornar o problema tratável neste horizonte.
+
+Novamente a sobreposição das fronteiras de Pareto, apresentado na Figura~\ref{fig:exato-pareto-30dias}, revela o padrão decrescente esperado, mas a interpretação das fronteiras como aproximações da fronteira ótima global fica comprometida. A ausência de soluções factíveis em muitos pontos \(\varepsilon\) e a elevada heterogeneidade entre as instâncias indicam que as fronteiras sobrepostas refletem mais a capacidade do método exato de encontrar soluções factíveis dentro do limite de tempo do que uma aproximação consistente da fronteira verdadeira. A dispersão entre as fronteiras é acentuada, com algumas instâncias apresentando formas mais irregulares e amplitudes maiores, o que sugere que os perfis sazonais de demanda em 2022 e 2023 geram variações significativas na dificuldade de resolução para esse horizonte.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.69\textwidth]{images/exato_pareto_overlay_30days.png}
+	\caption{Fronteiras de Pareto sobrepostas no horizonte de 30 dias.}
+	\label{fig:exato-pareto-30dias}
+	\vspace{-2mm}
+	\fautor
+\end{figure}
+
+O mapa de calor do MIP gap, presente na Figura~\ref{fig:exato-heatmap-30dias}, sintetiza a heterogeneidade de dificuldade entre as instâncias e os pontos \(\varepsilon\). Os pontos \(\varepsilon_1\) e \(\varepsilon_2\) apresenta uma grande concentração de instâncias cujos passos \(\epsilon\) estão acima de 40\% do \textit(gap), com adendo para o ponto \(\varepsilon_1\), onde 8 das 10 instâncias terminam sem solução factível. Nos pontos intermediários, observa-se uma tendência de aumento do gap médio, com alguns casos apresentando gaps acima de 80\%, evidenciando a dificuldade de convergência para essas configurações. As instâncias \textit{2023mar01} e \textit{2023jul01} continuam a destacar-se no mapa de calor por apresentarem gaps elevados em vários pontos, reforçando a percepção de que esses perfis de demanda são particularmente desafiadores para o método exato neste horizonte.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.68\textwidth]{images/exato_mipgap_heatmap_30days.png}
+	\caption{Mapa de calor do MIP gap no horizonte de 30 dias.}
+	\label{fig:exato-heatmap-30dias}
+	\vspace{-2mm}
+	\fautor
+\end{figure}
+
+O diagrama de caixa do tempo de execução por ponto \(\varepsilon\), apresentado na Figura~\ref{fig:exato-runtime-30dias}, mostra que os tempos de execução atingem o limite de 3.600~s para todas as instâncias em todos os pontos, o que reforça ainda mais a complexidade do problema, mesmo em um horizonte de planejamento baixo de 30 dias. A presença dos \textit{outliers} no gráfico dizem respeito ao \textit{overhead} computacional, que impedia o processo do \textit{solver} the terminar a tarefa exatamente em 3.600~s.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.65\textwidth]{images/exato_runtime_boxplot_30days.png}
+	\caption{Tempo de execução por ponto \(\varepsilon\) no horizonte de 30 dias.}
+	\label{fig:exato-runtime-30dias}
+	\vspace{-2mm}
+	\fautor
+\end{figure}
+
+A Tabela~\ref{tab:exato-triplet-30dias}, ao final desta seção, apresenta os resultados completos por instância e ponto \(\varepsilon\) no horizonte de 30 dias.
+
+% Tabela
+\clearpage
+\begin{sidewaystable}[p]
+	\centering
+	\caption{Resultados por ponto \(\varepsilon\) e instância, horizonte de 30 dias.}
+	\label{tab:exato-triplet-30dias}
+	\resizebox{\textheight}{!}{\input{tex/0-extras/exact_per_epsilon/triplet_30days.tex}}
+	\fautor
+\end{sidewaystable}
+
+\clearpage
+
+\section{Horizonte de 60 dias}
+\label{apendice:exato-h60}
+
+No horizonte bimestral, o gap MIP médio dobra em relação ao horizonte mensal, alcançando \(78{,}11\% \pm 14{,}73\) pontos percentuais. A elevada dispersão sinaliza que, em algumas instâncias, o limitante inferior reportado pelo Gurobi permanece próximo ao valor da relaxação linear, distante do incumbente factível encontrado. As fronteiras sobrepostas (Figura~\ref{fig:exato-pareto-60dias}) mantêm a forma esperada, decrescente de \(Z_2\) em função de \(Z_1\), mas a sua interpretação como aproximações da fronteira verdadeira fica comprometida: pontos que aparentam ser não-dominados podem, na realidade, ser dominados por soluções factíveis ainda não exploradas dentro do orçamento de 3.600~s. Esta limitação justifica, na Seção~\ref{cap:resultados:comparacao}, a leitura cautelosa das métricas comparativas a partir deste horizonte.
+
+A partir deste horizonte de planejamento, já podemos observar instabilidades significativas no comportamento do método exato, evidenciados pelo comportamento anormal das fronteiras de Pareto na Figura \ref{fig:exato-pareto-60dias}. Embora instâncias com padrão de sazonalidade de demanda mais suave apresentem fronteiras relativamente regulares, algumas instâncias apresentaram comportamento errático, ou até mesmo degradação na fronteira em pontos intermediários oriundos da incapacidade do método de encontrar soluções com baixo \textit{gap} dentro do limite de tempo. A heterogeneidade entre as instâncias é acentuada, com algumas apresentando formas mais irregulares e amplitudes maiores, o que sugere que os perfis sazonais de demanda em 2022 e 2023 geram variações significativas na dificuldade de resolução para esse horizonte.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.69\textwidth]{images/exato_pareto_overlay_60days.png}
+	\caption{Fronteiras de Pareto sobrepostas no horizonte de 60 dias.}
+	\label{fig:exato-pareto-60dias}
+	\fautor
+\end{figure}
+
+Apesar disso, o mapa de calor do MIP gap, presente na Figura~\ref{fig:exato-heatmap-60dias}, revela que não houve instâncias com pontos infactíveis, sem solução encontrada dentro do limite de tempo, representando um avanço em relação ao horizonte mensal, provavelmente associado a uma maior flexibilidade na construção de incumbentes factíveis. O gap médio, embora elevado, apresenta uma amplitude menor do que no horizonte mensal, o que sugere que o método exato consegue encontrar soluções factíveis com qualidade relativamente consistente entre as instâncias, mesmo que ainda distantes do limitante inferior reportado pelo \textit{solver}.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.68\textwidth]{images/exato_mipgap_heatmap_60days.png}
+	\caption{Mapa de calor do MIP gap no horizonte de 60 dias.}
+	\label{fig:exato-heatmap-60dias}
+	\fautor
+\end{figure}
+
+Assim como observado nos tempos de execução do horizonte mensal, o diagrama de caixa do tempo de execução por ponto \(\varepsilon\), apresentado na Figura~\ref{fig:exato-runtime-60dias}, mostra que os tempos de execução atingem o limite de 3.600~s para todas as instâncias em todos os pontos, o que reforça ainda mais a complexidade do problema, mesmo em um horizonte de planejamento de 60 dias. A presença dos \textit{outliers} no gráfico dizem respeito ao \textit{overhead} computacional, que impedia o processo do \textit{solver} de terminar a tarefa exatamente em 3.600~s.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.65\textwidth]{images/exato_runtime_boxplot_60days.png}
+	\caption{Tempo de execução por ponto \(\varepsilon\) no horizonte de 60 dias.}
+	\label{fig:exato-runtime-60dias}
+	\fautor
+\end{figure}
+
+
+A Tabela~\ref{tab:exato-triplet-60dias}, ao final desta seção, apresenta os resultados completos por instância e ponto \(\varepsilon\) no horizonte de 60 dias.
+
+% Tabela
+\clearpage
+
+\begin{sidewaystable}[p]
+	\centering
+	\caption{Resultados por ponto \(\varepsilon\) e instância, horizonte de 60 dias.}
+	\label{tab:exato-triplet-60dias}
+	\resizebox{\textheight}{!}{\input{tex/0-extras/exact_per_epsilon/triplet_60days.tex}}
+	\fautor
+\end{sidewaystable}
+
+\clearpage
+
+\section{Horizonte de 90 dias}
+\label{apendice:exato-h90}
+
+No horizonte trimestral, o gap MIP médio aproxima-se do limite teórico, com média de \(96{,}80\%\) e amplitude reduzida (\(\pm 6{,}22\) pontos percentuais), indicando uniformidade entre instâncias. O limitante inferior reportado pelo \textit{solver} é, em essência, próximo de zero ou da própria relaxação linear, de modo que o gap deixa de funcionar como medida útil de qualidade da solução encontrada. Sob esse regime, o método exato preserva a função de fornecer soluções factíveis na grade de \(\varepsilon\), mas a sua fronteira de Pareto não pode mais ser interpretada como aproximação confiável da fronteira ótima global. A análise por instância (Figura~\ref{fig:exato-pareto-90dias}) revela a coexistência de fronteiras com formas e amplitudes distintas, espelhando a heterogeneidade dos perfis sazonais de demanda de 2022 e 2023.
+
+O horizonte de planejamento de 90 dias apresenta o comportamento mais errático, evidenciado na Figura \ref{fig:exato-pareto-90dias}. Observa-se que na maioria das instâncias, o comportamento é das fronteiras é de pontos relativamente estáveis nos extremos, especialmente nos pontos \(\epsilon_{1}\), com uma grande degradação na fronteira a partir dos pontos intermediários e extremo \(\epsilon_{7}\), demonstrando a dificuldade oriunda da complexidade combinatória do problema de redução de trocas. Em outros casos, no entanto, observa-se o comportamento oposto, com \textit{gaps} elevados para os pontos iniciais, e melhor desempenho nos extremos de troca. Algumas instâncias, como \textbf{fevereiro de 2022 a maio de 2022} apresentam o comportamento de decrescimento esperado entre os pontos a medida que os passos deslocam-sem, admitindo menos exames atendidos em detrimento a mais trocas, com o adendo de que os pontos intermediários apresentam degradação significativa.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.72\textwidth]{images/exato_pareto_overlay_90days.png}
+	\caption{Fronteiras de Pareto sobrepostas no horizonte de 90 dias.}
+	\label{fig:exato-pareto-90dias}
+	\fautor
+\end{figure}
+
+\newpage
+
+O mapa de calor do MIP gap, presente na Figura~\ref{fig:exato-heatmap-90dias}, revela apenas um caso de instância com ponto \(\varepsilon\) infactível. No entanto, observa-se a grande maioria dos pontos tiveram \textit{gap} de 100\%, o que indica que o limitante inferior reportado pelo \textit{solver} é próximo de zero ou da própria relaxação linear, e que as soluções factíveis encontradas estão distantes desse limitante, reforçando a percepção de que o método exato, sob esse regime, não consegue explorar de forma eficaz a região próxima à fronteira ótima global. A heterogeneidade entre as instâncias é acentuada, com algumas apresentando formas mais irregulares e amplitudes maiores, o que sugere que os perfis sazonais de demanda em 2022 e 2023 geram variações significativas na dificuldade de resolução para esse horizonte.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\textwidth]{images/exato_mipgap_heatmap_90days.png}
+	\caption{Mapa de calor do MIP gap no horizonte de 90 dias.}
+	\label{fig:exato-heatmap-90dias}
+	\fautor
+\end{figure}
+
+Novamente, o diagrama de caixa do tempo de execução por ponto \(\varepsilon\), apresentado na Figura~\ref{fig:exato-runtime-90dias}, mostra que os tempos de execução atingem o limite de 3.600~s para todas as instâncias em todos os pontos, o que reforça ainda mais a complexidade do problema, mesmo em um horizonte de planejamento de 90 dias. A presença dos \textit{outliers} no gráfico dizem respeito ao \textit{overhead} computacional significativo oriundo do tamanho do modelo em memória, que impedia o processo do \textit{solver} de terminar a tarefa exatamente em 3.600~s.
+
+\newpage
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.7\textwidth]{images/exato_runtime_boxplot_90days.png}
+	\caption{Tempo de execução por ponto \(\varepsilon\) no horizonte de 90 dias.}
+	\label{fig:exato-runtime-90dias}
+	\fautor
+\end{figure}
+
+A Tabela~\ref{tab:exato-triplet-90dias}, ao final desta seção, apresenta os resultados completos por instância e ponto \(\varepsilon\) no horizonte de 90 dias.
+
+% Tabela
+\clearpage
+
+\begin{sidewaystable}[p]
+	\centering
+	\caption{Resultados por ponto \(\varepsilon\) e instância, horizonte de 90 dias.}
+	\label{tab:exato-triplet-90dias}
+	\resizebox{\textheight}{!}{\input{tex/0-extras/exact_per_epsilon/triplet_90days.tex}}
+	\fautor
+	\label{LastContentPage}
+\end{sidewaystable}
+
+\clearpage

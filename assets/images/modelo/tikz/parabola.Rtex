@@ -1,0 +1,33 @@
+\documentclass[border=2mm]{standalone}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+
+<<include=FALSE>>=
+    y <- seq(from=-3, to=3, by=0.2)
+    p <- 2
+    x <- y^2 / (4*p)
+    n <- length(y)
+    parabola <- sprintf("\\draw[line width=0.8, blue] (%.2f, %.2f)", x[1], y[1])
+    for (i in 2:n) {
+        parabola <- sprintf("%s -- (%.2f, %.2f)", parabola, x[i], y[i])
+    }
+@
+
+\begin{document}
+\begin{tikzpicture}
+    \clip (-3.7, -3.7) rectangle (3.7, 3.7);
+    \draw[-latex] (-3.5, 0) node[above] {$l$} -- (3.5, 0) node[below] {$x$};
+    \draw[-latex] (0, -3.5) -- (0, 3.5) node[left] {$y$};
+    \draw[green!50!black, thick] (-2, -3.5) -- (-2, 3.5) node[right, black] {$\mathcal{L}$};
+    \Sexpr{parabola};
+    \draw[dashed] (\Sexpr{p}, 0) -- (\Sexpr{2^2/(4*p)}, 2) -- (-2, 2);
+    \filldraw (\Sexpr{p}, 0) circle (1pt) node [below] {$F$} node [above, xshift=10pt] {$(p, 0)$};
+    \filldraw (\Sexpr{2^2/(4*p)}, 2) circle (1pt) node [right] {$P$};
+    \filldraw (-2, 2) circle (1pt);
+    \filldraw (0, 0) circle (1pt) node[below, xshift=-5pt] {$V$}; 
+    \filldraw (-2, 0) circle (1pt) node[below, xshift=-20pt] {$(-p,0)$}; 
+    \draw (-2, 0) rectangle ++(0.25, 0.25) node[midway] {$\cdot$};
+\end{tikzpicture}
+\end{document}

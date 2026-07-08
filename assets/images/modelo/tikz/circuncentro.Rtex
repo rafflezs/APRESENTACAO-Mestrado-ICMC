@@ -1,0 +1,31 @@
+\documentclass[border=2mm]{standalone}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+
+\begin{document}
+    \begin{tikzpicture}
+        \coordinate (O) at (0,0);
+        \coordinate (A) at (120:3);
+        \coordinate (B) at (200:3);
+        \coordinate (C) at (-20:3);
+
+        \coordinate (M) at ($ (A)!0.5!(B) $);
+        \coordinate (N) at ($ (B)!0.5!(C) $);
+        \coordinate (P) at ($ (A)!0.5!(C) $);
+
+        
+            
+        \draw (O) node[above]{$O$} circle (3);
+        \draw (A) node[above] {$A$}  -- (B) node[left] {$B$} -- (C) node[right] {$C$} -- cycle;
+        \draw[rotate around={-20:(M)}] (M) rectangle ++(0.2, -0.2) node[midway] {$\cdot$};
+        \draw (O) -- (M) -- ($ (O)!1.5!(M) $);
+        \draw[rotate around={0:(N)}] (N) rectangle ++(0.2, 0.2) node[midway] {$\cdot$};
+        \draw (O) -- (N) -- ($ (O)!2!(N) $);
+        \draw[rotate around={90+50:(P)}] (P) rectangle ++(0.2, 0.2) node[midway] {$\cdot$};
+        \draw (O) -- (P) -- ($ (O)!2!(P) $);
+    \end{tikzpicture}
+\end{document}
