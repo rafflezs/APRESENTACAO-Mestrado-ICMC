@@ -1,0 +1,111 @@
+\providecommand{\abntreprintinfo}[1]{%
+ \citeonline{#1}}
+\setlength{\labelsep}{0pt}\begin{thebibliography}{}
+\providecommand{\abntrefinfo}[3]{}
+\providecommand{\abntbstabout}[1]{}
+\abntbstabout{v<VERSION> }
+
+\bibitem[Abramed 2023]{Abramed_2023}
+\abntrefinfo{Abramed}{Abramed}{2023}
+{ABRAMED. \textbf{Associados à Abramed realizaram mais de 720 milhões de
+  exames em 2022}. 2023.
+Dispon{\'\i}vel em:
+  \url{https://abramed.org.br/5095/associados-a-abramed-realizaram-mais-de-720-milhoes-de-exames-em-2022/}.}
+
+\bibitem[BRIEN 2007]{OBRIEN_2007}
+\abntrefinfo{BRIEN}{BRIEN}{2007}
+{BRIEN, J.~T. O. Role of imaging techniques in the diagnosis of dementia.
+v.~80, p. S71–S77, dez. 2007.
+ISSN 0007-1285.}
+
+\bibitem[Deb \textit{et al.} 2002]{Deb_Pratap_Agarwal_Meyarivan_2002}
+\abntrefinfo{Deb \textit{et al.}}{Deb \textit{et al.}}{2002}
+{DEB, K.; PRATAP, A.; AGARWAL, S.; MEYARIVAN, T. A fast and elitist
+  multiobjective genetic algorithm: Nsga-ii.
+\textbf{IEEE Transactions on Evolutionary Computation}, v.~6, n.~2, p.
+  182–197, abr. 2002.
+ISSN 1941-0026.}
+
+\bibitem[Fleischmann e Meyr 1997]{Fleischmann_Meyr_1997}
+\abntrefinfo{Fleischmann e Meyr}{Fleischmann; Meyr}{1997}
+{FLEISCHMANN; MEYR. The general lotsizing and scheduling problem.
+\textbf{Operations-Research-Spektrum}, 1997.
+Dispon{\'\i}vel em: \url{https://sci-hub.st/10.1007/BF01539800}.}
+
+\bibitem[Haimes 1971]{Haimes_Wismer_1971}
+\abntrefinfo{Haimes}{Haimes}{1971}
+{HAIMES, D. A.~W. Y.~Y. On a bicriterion formulation of the problems of
+  integrated system identification and system optimization.
+\textbf{IEEE Transactions on Systems, Man, and Cybernetics}, SMC-1, n.~3, p.
+  296–297, jul 1971.
+ISSN 2168-2909.}
+
+\bibitem[Liebel \textit{et al.} 2021]{Liebel_Dias_Schneider_SaScielo2021}
+\abntrefinfo{Liebel \textit{et al.}}{Liebel \textit{et al.}}{2021}
+{LIEBEL, G.; DIAS, P.~V.; SCHNEIDER, I. J.~C.; JUNIOR, A. R.~d. S.; HENTZ, A.;
+  FERREIRA, C. d.~S.; CHAOUBAH, A. Análise dos gastos com diagnóstico por
+  imagem no brasil.
+\textbf{Cadernos Saúde Coletiva}, Instituto de Estudos em Saúde Coletiva da
+  Universidade Federal do Rio de Janeiro, v.~29, p. 453–463, dez. 2021.
+ISSN 1414-462X, 2358-291X.}
+
+\bibitem[{Medicina S.A.} 2024]{MedicinaSA2024}
+\abntrefinfo{{Medicina S.A.}}{{Medicina S.A.}}{2024}
+{{Medicina S.A.} \textbf{Brasileiros realizaram 2,4 bilhões de exames em 2023,
+  alta de 11\%}. 2024.
+Dispon{\'\i}vel em: \url{https://medicinasa.com.br/exames-diagnostico-23/}.}
+
+\bibitem[Robinson e Chen 2003]{Robinson_Chen_2003}
+\abntrefinfo{Robinson e Chen}{Robinson; Chen}{2003}
+{ROBINSON, L.; CHEN, R. Scheduling doctors’ appointments: Optimal and
+  empirically-based heuristic policies.
+\textbf{IIE Transactions (Institute of Industrial Engineers)}, v.~35, n.~3, p.
+  295–307, 2003.}
+
+\bibitem[Rousseau, Pesant e Gendreau 2002]{Rousseau_Pesant_Gendreau_2002}
+\abntrefinfo{Rousseau, Pesant e Gendreau}{Rousseau; Pesant; Gendreau}{2002}
+{ROUSSEAU, L.-M.; PESANT, G.; GENDREAU, M. A general approach to the physician
+  rostering problem.
+\textbf{Annals of Operations Research}, v.~115, n.~1, p. 193–205, set. 2002.
+ISSN 1572-9338.}
+
+\bibitem[RSNA 2024]{RSNA_2024}
+\abntrefinfo{RSNA}{RSNA}{2024}
+{RSNA. \textbf{Radiology Technologists are in High Demand And Short Supply}.
+  2024.
+Dispon{\'\i}vel em:
+  \url{https://www.rsna.org/news/2024/october/radiologic-technologist-shortage}.}
+
+\bibitem[Suplementar 2024]{ANS_2024}
+\abntrefinfo{Suplementar}{Suplementar}{2024}
+{SUPLEMENTAR, A.~N. de S. \textbf{ANS divulga dados econômico-financeiros
+  relativos ao 3º trimestre de 2024}. 2024.
+Dispon{\'\i}vel em:
+  \url{https://www.gov.br/ans/pt-br/assuntos/noticias/numeros-do-setor/ans-divulga-dados-economico-financeiros-relativos-ao-3o-trimestre-de-2024}.}
+
+\bibitem[Sáez-Aguado e Trandafir 2018]{Saez-Aguado_Trandafir_2018}
+\abntrefinfo{Sáez-Aguado e Trandafir}{Sáez-Aguado; Trandafir}{2018}
+{SáEZ-AGUADO, J.; TRANDAFIR, P.~C. Variants of the $\varepsilon$-constraint
+  method for biobjective integer programming problems: application to
+  p-median-cover problems.
+\textbf{Mathematical Methods of Operations Research}, v.~87, n.~2, p.
+  251–283, abr. 2018.
+ISSN 1432-5217.}
+
+\bibitem[Turhan e Bilgen 2020]{Turhan_Bilgen_2020}
+\abntrefinfo{Turhan e Bilgen}{Turhan; Bilgen}{2020}
+{TURHAN, A.~M.; BILGEN, B. A hybrid fix-and-optimize and simulated annealing
+  approaches for nurse rostering problem.
+\textbf{Computers \& Industrial Engineering}, v.~145, p. 106531, jul. 2020.
+ISSN 0360-8352.}
+
+\bibitem[Yasui \textit{et al.}
+  2012]{Yasui_Fujiwara_Okitsu_Yonemitsu_Ito_Yokosuka_2012}
+\abntrefinfo{Yasui \textit{et al.}}{Yasui \textit{et al.}}{2012}
+{YASUI, S.; FUJIWARA, K.; OKITSU, K.; YONEMITSU, Y.; ITO, H.; YOKOSUKA, O.
+  Importance of computed tomography imaging features for the diagnosis of
+  autoimmune acute liver failure.
+\textbf{Hepatology Research}, v.~42, n.~1, p. 42–50, 2012.
+ISSN 1872-034X.}
+
+\end{thebibliography}

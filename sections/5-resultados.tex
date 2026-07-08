@@ -1,0 +1,138 @@
+% =====================================================================
+% §5 EXPERIMENTOS E RESULTADOS  (HERO — foco do tempo de apresentação)
+% dados/pipeline -> protocolo -> transição de regime -> Pareto -> HV -> escalabilidade
+% =====================================================================
+\section{Experimentos e Resultados}
+
+%%% Frame 5.1 — Base de dados + pipeline
+\begin{frame}{Base de dados e geração de instâncias}
+    \begin{columns}[T]
+        \begin{column}{0.55\textwidth}
+            \begin{block}{Dados reais (2022--2023)}
+                \begin{itemize}
+                    \item 250 médicos, 37 unidades.
+                    \item 28.445 registros de exames.
+                    \item 576 dias consecutivos (base histórica).
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.45\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=\linewidth]{img/quali-etl-base-dados.png}
+                \caption{\footnotesize \textit{Pipeline} de geração de instâncias.}
+                \label{fig:pipeline}
+            \end{figure}
+        \end{column}
+    \end{columns}
+    % TODO: separação base-modelo vs base-validação (evita vazamento).
+\end{frame}
+
+%%% Frame 5.2 — Protocolo experimental
+\begin{frame}{Protocolo experimental}
+    \begin{block}{Desenho de dois estágios}
+        \begin{itemize}
+            \item 4 horizontes: \textbf{15 / 30 / 60 / 90 dias}.
+            \item 10 instâncias por horizonte: 2 parametrização $+$ 8 validação $\rightarrow$ 40 pares.
+            \item Ambiente: \textit{cluster} Euler (ICMC-USP), Gurobi 12.0.3, \textit{pymoo} 0.6.1.
+            \item Limite: \textbf{3.600 s} por ponto $\varepsilon$ (MIP) / por instância (NSGA-II).
+        \end{itemize}
+    \end{block}
+    \begin{block}{Métricas}
+        Hipervolume (HV), amplitude $Z_1/Z_2$, \textit{gap} de referência, MIP \textit{gap}, tempo, taxa de factibilidade.
+    \end{block}
+\end{frame}
+
+%%% Frame 5.3 — HEADLINE: transição de regime 15->30d
+\begin{frame}{Resultado central: transição de regime (15 $\rightarrow$ 30 dias)}
+    \begin{columns}[T]
+        \begin{column}{0.46\textwidth}
+            \begin{table}
+                \centering
+                \begin{footnotesize}
+                    \begin{tabular}{ccc}
+                        \toprule
+                        \textbf{Hor.} & \textbf{MIP gap méd.} & \textbf{$\varepsilon$ ótimos} \\
+                        \midrule
+                        15d & 4,1\% & 3 / 7 \\
+                        30d & 42,7\% & 0 / 7 \\
+                        60d & 78,1\% & 0 / 7 \\
+                        90d & 96,8\% & 0 / 7 \\
+                        \bottomrule
+                    \end{tabular}
+                \end{footnotesize}
+                \caption{\footnotesize MIP \textit{gap} do método exato.}
+                \label{tab:mipgap}
+            \end{table}
+        \end{column}
+        \begin{column}{0.54\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=\linewidth]{img/exato_mipgap_heatmap_30days.png}
+                \caption{\footnotesize Mapa de calor do MIP \textit{gap} (30 dias).}
+                \label{fig:mipgap-heat}
+            \end{figure}
+        \end{column}
+    \end{columns}
+    \begingroup
+    \setbeamercolor{block title}{fg=white, bg=UFTblue}
+    \setbeamercolor{block body}{bg=UFTblue!10}
+    \begin{block}{}
+        Exato converge só no ciclo quinzenal. A partir de 30d $\rightarrow$ heurísticas \textbf{necessárias}.
+    \end{block}
+    \endgroup
+\end{frame}
+
+%%% Frame 5.4 — Fronteiras de Pareto comparativas
+\begin{frame}{Fronteiras de Pareto comparativas}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.88\linewidth]{img/pareto_comparativo_todos_horizontes.png}
+        \caption{Fronteiras de Pareto por horizonte: Exato, RF, Híbrido, NSGA-IIe, NSGA-IIc.}
+        \label{fig:pareto-todos}
+    \end{figure}
+    % TODO: em 15d todas convergem; em 60-90d a referência exata é sub-ótima.
+\end{frame}
+
+%%% Frame 5.5 — Qualidade (hipervolume relativo)
+\begin{frame}{Qualidade das soluções: hipervolume relativo}
+    \begin{table}
+        \centering
+        \resizebox{0.85\textwidth}{!}{\begin{tabular}{ccccc}
+            \toprule
+            \textbf{Método} & \textbf{15d} & \textbf{30d} & \textbf{60d} & \textbf{90d} \\
+            \midrule
+            Exato    & 1,000 & 1,000 & 1,000 & 1,000 \\
+            RF       & 0,984 & 0,852 & 1,158 & 4,213 \\
+            Híbrido  & 0,996 & 1,008 & 0,938 & 1,941 \\
+            NSGA-IIe & 0,279 & 0,023 & 0,736 & 10,190 \\
+            NSGA-IIc & 0,382 & 0,217 & 1,039 & 12,888 \\
+            \bottomrule
+        \end{tabular}}
+        \caption{\footnotesize Hipervolume relativo ao método exato (referência $=1{,}000$).}
+        \label{tab:hv}
+    \end{table}
+    \begin{footnotesize}
+    \begin{block}{Leitura}
+        \begin{itemize}
+            \item Híbrido $\approx$ exato em 15d e 30d.
+            \item HV $>1$ em horizontes longos: referência exata \textbf{não convergiu} (sub-ótima).
+        \end{itemize}
+    \end{block}
+    \end{footnotesize}
+\end{frame}
+
+%%% Frame 5.6 — Escalabilidade computacional
+\begin{frame}{Desempenho computacional e escalabilidade}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.72\linewidth]{img/escalabilidade_metodos.png}
+        \caption{Escalabilidade dos métodos em função do horizonte.}
+        \label{fig:escalabilidade}
+    \end{figure}
+    \begin{footnotesize}
+    \begin{block}{}
+        MIP saturam o limite de tempo ($\approx$ 25.200 s p/ 7 pontos $\geq$ 30d); NSGA-II $\approx$ 3.600 s $\rightarrow$ $\sim$7$\times$ mais rápido.
+    \end{block}
+    \end{footnotesize}
+\end{frame}
