@@ -136,3 +136,47 @@
     \end{block}
     \end{footnotesize}
 \end{frame}
+
+% ---------------------------------------------------------------------
+\subsection{Factibilidade do NSGA-II}
+
+%%% Frame 5.7 — Factibilidade (o caveat, dito com clareza)
+\begin{frame}{Factibilidade das soluções NSGA-II}
+
+    \begingroup
+    \setbeamercolor{block title}{fg=white, bg=red!40}
+    \setbeamercolor{block body}{bg=red!10}
+    \begin{block}{Por que ler o NSGA-II em separado}
+        Nenhuma solução NSGA-II satisfaz a cobertura mínima (R\ref{eq:r6}). Sem factibilidade garantida, \textbf{não há comparação direta} com os métodos que a garantem (Exato, MIP-heurísticas).
+    \end{block}
+    \endgroup
+
+    \begin{block}{O que exatamente é violado}
+        \begin{itemize}
+            \item Estruturais R\ref{eq:r1}--R\ref{eq:r4}: satisfeitas (Estendido 100\%; Compacto 89,8\%).
+            \item Cobertura mínima (R\ref{eq:r6}): violada em 4--6\% dos períodos (turno vespertino).
+            \item Compacto: 10,2\% também violam capacidade de sala (R\ref{eq:r5}), clínica U06.
+        \end{itemize}
+    \end{block}
+    % TODO: Z1/Z2 verificados via Gurobi com variáveis fixadas.
+\end{frame}
+
+%%% Frame 5.8 — Discussão isolada (Compacto >> Estendido)
+\begin{frame}{NSGA-II: Compacto \emph{vs.} Estendido (análise isolada)}
+
+    \begin{block}{Dentro da família meta-heurística}
+        \begin{itemize}
+            \item Compacto executa muito mais gerações (cromossomo $\sim$70$\times$ menor).
+            \item Compacto \textbf{domina} o Estendido em todos os horizontes.
+            \item Escala para 60--90 dias com fronteiras densas ($\sim$100 soluções).
+        \end{itemize}
+    \end{block}
+
+    \begingroup
+    \setbeamercolor{block title}{fg=white, bg=UFTblue}
+    \setbeamercolor{block body}{bg=UFTblue!10}
+    \begin{block}{Encaminhamento}
+        Limitação de factibilidade $\rightarrow$ \textbf{operador de reparo} (trabalho futuro), não comparação direta com o exato.
+    \end{block}
+    \endgroup
+\end{frame}

@@ -153,3 +153,11 @@
 \renewcommand{\thesubsection}{\textcolor{PROFMATgreen}{\arabic{section}.\arabic{subsection}}}
 
 \setbeamersize{text margin left=0.8cm, text margin right=0.8cm}
+
+
+% Slide divisor no início de cada seção (destaca a seção corrente no sumário)
+\AtBeginSection[]{
+    \begin{frame}{Sumário}
+        \tableofcontents[currentsection]
+    \end{frame}
+}
