@@ -8,7 +8,17 @@ LaTeX Beamer slide deck for a Master's degree defense (Final Master's Exam / "De
 
 ## Build
 
-No Makefile/latexmk config checked in. Compile with the standard ABNT sequence (uses `abntex2cite` + the bundled `abntex2-alf.bst`, so it needs classic BibTeX, not biber):
+Uses `abntex2cite` + the bundled `abntex2-alf.bst`, so it needs classic BibTeX, not biber.
+
+**Preferred — `latexmk` (config checked in):** a `.latexmkrc` is present. Just run:
+
+```
+latexmk -pdf main.tex
+```
+
+`.latexmkrc` sets `pdflatex` mode, routes aux files to `tmp/` (`$aux_dir`), and copies the final PDF to `out/main.pdf` (`$out_dir`), with SyncTeX on. Both `tmp/` and `out/` are generated dirs (git-ignored) — the compiled PDF lands in `out/`, **not** the repo root. `latexmk -c` cleans.
+
+**Manual equivalent** (writes `.aux`/`.bbl`/`.pdf` to the repo root instead of `tmp`/`out`):
 
 ```
 pdflatex main.tex
@@ -16,8 +26,6 @@ bibtex main
 pdflatex main.tex
 pdflatex main.tex
 ```
-
-Or, if `latexmk` is available: `latexmk -pdf -bibtex main.tex`.
 
 ## Structure
 
@@ -27,6 +35,7 @@ Or, if `latexmk` is available: `latexmk -pdf -bibtex main.tex`.
 - `img/` — **flat** image directory actually referenced by the current slides (paths in `sections/*.tex` are always `img/...`, `img/modelo/...`, `img/modelo/tikz/...`). Only ~32 files, a subset of what's available.
 - `assets/` (and `assets/images/`) — a superset image pool (~88 files) not yet wired into any `\includegraphics` call. It contains the newer figures generated for the dissertation (NSGA-II operator diagrams `01_sampling.png`…`05_encoding.png`, `exato_mipgap_heatmap_*`, `exato_pareto_overlay_*`, `exato_runtime_boxplot_*`, `escalabilidade_metodos.png`, `param_mip_barchart.png`, `param_nsga2_heatmap.png`, clinic-relationship diagrams, etc.). **When building the final deck, new figures should be copied/linked from `assets/images/` into `img/`** (flattening `images/` prefix) rather than referenced via `assets/`, to stay consistent with the existing path convention.
 - `bibliografia.bib` / `abntex2-alf.bst` — bibliography source and the ABNT-ALF BibTeX style; keys generally follow `Author_Year` (e.g. `Liebel_2021`), cited via `\citeonline{...}` (abntex2cite).
+- `.latexmkrc` — latexmk config (see Build): `pdflatex` mode, `$aux_dir='tmp'`, `$out_dir='out'`, SyncTeX on, and an `END` block copying `tmp/*.pdf` → `out/`. Compiled output goes to `out/main.pdf`; `tmp/` and `out/` are generated (not source).
 
 ## `docs/refs/` — reference material, not compiled
 
