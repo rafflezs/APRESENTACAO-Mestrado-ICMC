@@ -1,64 +1,7 @@
-% =====================================================================
-% §7 CONCLUSÕES E PERSPECTIVAS
-% contribuições -> recomendação operacional -> limitações + futuro
-% =====================================================================
 \section{Conclusões e Perspectivas}
 
-%%% Frame 7.1 — Contribuições
-\begin{frame}{Contribuições}
-    \begin{block}{}
-        \begin{itemize}
-            \item Modelagem MIP \textbf{bi-objetiva} para escalonamento em múltiplas clínicas autônomas.
-            \item Variável de estado $\gamma_{iud}$ (adaptada do GLSP) para detecção de trocas em agendas com lacunas.
-            \item Acoplamento $\varepsilon$-restrito $\oplus$ MIP-heurísticas sob orçamento comum.
-            \item Variantes NSGA-II Estendido e Compacto com operadores customizados.
-            \item Avaliação sistemática das três famílias sobre dados reais.
-        \end{itemize}
-    \end{block}
-\end{frame}
-
-%%% Frame 7.2 — Recomendação operacional
-\begin{frame}{Recomendação operacional}
-    \begingroup
-    \setbeamercolor{block title}{fg=white, bg=UFTgreen}
-    \setbeamercolor{block body}{bg=UFTgreen!10}
-    \begin{block}{Por horizonte de planejamento}
-        \begin{itemize}
-            \item \textbf{Quinzenal (15d):} método \textbf{exato} (converge à otimalidade).
-            \item \textbf{Mensal+ (30/60/90d):} heurísticas são necessárias.
-            \item \textbf{Híbrido} quando há tempo comparável ao \textit{solver}.
-            \item \textbf{NSGA-II Compacto} quando o tempo é estritamente limitado.
-        \end{itemize}
-    \end{block}
-    \endgroup
-    % TODO: reforçar transição de regime como critério de escolha.
-\end{frame}
-
-%%% Frame 7.3 — Limitações + trabalhos futuros
-\begin{frame}{Limitações e trabalhos futuros}
-    \begin{columns}[T]
-        \begin{column}{0.5\textwidth}
-            \begingroup
-            \setbeamercolor{block title}{fg=white, bg=red!40}
-            \setbeamercolor{block body}{bg=red!10}
-            \begin{block}{Limitações}
-                \begin{itemize}
-                    \item NSGA-II viola cobertura mínima (R\ref{eq:r6}).
-                    \item Demanda/disponibilidade determinísticas.
-                    \item Regras ergonômicas ainda fora do modelo.
-                \end{itemize}
-            \end{block}
-            \endgroup
-        \end{column}
-        \begin{column}{0.5\textwidth}
-            \begin{block}{Trabalhos futuros}
-                \begin{itemize}
-                    \item Operadores de \textbf{reparo} de cobertura.
-                    \item Demanda estocástica / reescalonamento \textit{online}.
-                    \item \textit{Warm-start} por Aprendizado de Máquina.
-                    \item \textit{Pipeline} híbrida exato $\oplus$ meta-heurística.
-                \end{itemize}
-            \end{block}
-        \end{column}
-    \end{columns}
-\end{frame}
+% Pequena seção de conclusão e apanhados gerais, focando em:
+% - Síntese dos resultados obtidos
+% - Contribuições do trabalho
+% - Limitações do estudo
+% - Perspectivas de trabalhos futuros

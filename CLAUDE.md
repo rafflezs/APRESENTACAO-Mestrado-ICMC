@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-LaTeX Beamer slide deck for a Master's degree defense (Final Master's Exam / "Defesa"), USP-ICMC. The deck at the repo root is currently a **verbatim copy of the qualification exam presentation** (`docs/refs/apresentacao_qualificacao/`) — `main.tex`, `customizacoes.tex`, `sections/*.tex` are byte-identical to that reference copy. The live task for this repo is to evolve this qualification deck into the **final defense deck**, reusing the template/theme but replacing content to match the finished dissertation (`docs/refs/dissertacao_tex/`), whose results are substantially more advanced than what the qualification slides show (see below).
+LaTeX Beamer slide deck for a Master's degree defense (Final Master's Exam / "Defesa"), USP-ICMC. It reuses the qualification exam's Beamer template/theme (`docs/refs/apresentacao_qualificacao/` is a frozen copy of that quali deck), but the **content is being rebuilt from scratch** to match the finished dissertation (`docs/refs/dissertacao_tex/`).
+
+The deck is **in active development**, restructured into **6 sections** that mirror the dissertation chapters — with the **literature review folded into the Introdução** for narrative cohesion. Target: **~30 content slides / ~30 minutes**, excluding filler (title, section dividers, references, acknowledgements). Good academic storytelling is an explicit goal. `sections/*.tex` are currently **skeletons** — each holds a `\section{}` + a comment header describing intended content — and are filled/audited **one section at a time**, drawing content and figures from `docs/refs/`.
 
 ## Build
 
@@ -13,7 +15,7 @@ Uses `abntex2cite` + the bundled `abntex2-alf.bst`, so it needs classic BibTeX, 
 **Preferred — `latexmk` (config checked in):** a `.latexmkrc` is present. Just run:
 
 ```
-latexmk -pdf main.tex
+latexmk -pdf -synctex=1 -interaction=nonstopmode main.tex
 ```
 
 `.latexmkrc` sets `pdflatex` mode, routes aux files to `tmp/` (`$aux_dir`), and copies the final PDF to `out/main.pdf` (`$out_dir`), with SyncTeX on. Both `tmp/` and `out/` are generated dirs (git-ignored) — the compiled PDF lands in `out/`, **not** the repo root. `latexmk -c` cleans.
@@ -30,11 +32,11 @@ pdflatex main.tex
 ## Structure
 
 - `main.tex` — document class (`beamer`, `xcolor={dvipsnames}, 10pt, brazil`), title/author/date/advisor metadata, `\input{customizacoes}`, then `\include`s each file in `sections/` in order, then bibliography + acknowledgements + closing title frame.
-- `customizacoes.tex` — all theme/styling: CambridgeUS theme, custom `UFTgreen/UFTblue/UFTyellow/UFTgray`/`PROFMATgreen` palette, custom title page layout (`\setbeamertemplate{title page}`), full-page background image (`img/modelo/bakcground.png`), ABNT citation setup, caption/spacing tweaks. Edit here for anything deck-wide (colors, fonts, title page layout); edit `sections/*.tex` for content.
-- `sections/1-intro.tex` … `sections/5-conclusao.tex` — one file per `\section`, each a sequence of `\begin{frame}{...}` blocks. `99-outros.tex` exists but is **not** `\include`d from `main.tex` — it's leftover generic PROFMAT-template example content (theorems, parabola, SI units), safe to ignore/delete.
-- `img/` — **flat** image directory actually referenced by the current slides (paths in `sections/*.tex` are always `img/...`, `img/modelo/...`, `img/modelo/tikz/...`). Only ~32 files, a subset of what's available.
-- `assets/` (and `assets/images/`) — a superset image pool (~88 files) not yet wired into any `\includegraphics` call. It contains the newer figures generated for the dissertation (NSGA-II operator diagrams `01_sampling.png`…`05_encoding.png`, `exato_mipgap_heatmap_*`, `exato_pareto_overlay_*`, `exato_runtime_boxplot_*`, `escalabilidade_metodos.png`, `param_mip_barchart.png`, `param_nsga2_heatmap.png`, clinic-relationship diagrams, etc.). **When building the final deck, new figures should be copied/linked from `assets/images/` into `img/`** (flattening `images/` prefix) rather than referenced via `assets/`, to stay consistent with the existing path convention.
-- `bibliografia.bib` / `abntex2-alf.bst` — bibliography source and the ABNT-ALF BibTeX style; keys generally follow `Author_Year` (e.g. `Liebel_2021`), cited via `\citeonline{...}` (abntex2cite).
+- `customizacoes.tex` — all theme/styling: CambridgeUS theme, custom `UFTgreen/UFTblue/UFTyellow/UFTgray`/`PROFMATgreen` palette, custom title page layout (`\setbeamertemplate{title page}`), full-page background image (`img/modelo/bakcground.png`), ABNT citation setup, caption/spacing tweaks. Also loads `booktabs` and defines an `\AtBeginSection` **section-divider** frame (mini-TOC via `\tableofcontents[currentsection]`, highlighting the current section). Edit here for anything deck-wide (colors, fonts, title page layout, dividers); edit `sections/*.tex` for content.
+- `sections/*.tex` — one file per `\section`, `\include`d in order by `main.tex`: `1-intro` (Introdução **+ literature/research gaps**), `2-definicao-problema` (Definição do Problema — formal model), `3-metodologia` (Metodologia e Abordagens — exact/MIP-heuristics/NSGA-II), `4-experimentos` (setup: environment, instances, protocol, metrics), `5-resultados` (Resultados e Discussão), `6-conclusao` (Conclusões e Perspectivas). Each is currently a `\section{}` + comment header (skeleton), filled one at a time. `99-outros.tex` is leftover generic PROFMAT example content, **not** `\include`d — ignore/delete.
+- `img/` — **flat** image directory referenced by the slides (paths are always `img/...`, `img/modelo/...`). Now holds the dissertation figures (copied from `assets/images/`, flattening the `images/` prefix) plus the custom `lacuna-literatura.png` (research-gap matrix built for the Introdução).
+- `assets/` (and `assets/images/`) — the original superset image pool. It contains the dissertation figures (NSGA-II operator diagrams `01_sampling.png`…`05_encoding.png`, `exato_mipgap_heatmap_*`, `exato_pareto_overlay_*`, `exato_runtime_boxplot_*`, `escalabilidade_metodos.png`, `param_mip_barchart.png`, `param_nsga2_heatmap.png`, `pareto_comparativo_*`, clinic-relationship diagrams, etc.). **When a new figure is needed, copy it from `assets/images/` into `img/`** (flattening `images/`) rather than referencing `assets/` directly, to keep the `img/...` path convention.
+- `references.bib` (repo root, **70 entries**) — the **active** bibliography; `main.tex` uses `\bibliography{references}`. Copied from `docs/refs/dissertacao_tex/references.bib` (the master thesis bib). `bibliografia.bib` (8 entries) is the legacy quali bib, no longer referenced. `abntex2-alf.bst` is the ABNT-ALF BibTeX style; keys follow `Author_Year` (e.g. `Deb_Pratap_Agarwal_Meyarivan_2002`), cited via `\cite{...}`/`\citeonline{...}` (abntex2cite → classic BibTeX). Note: dissertation-text keys sometimes differ from the legacy quali keys (e.g. `MedicinaSA2024` vs `MedicinaSA_2024`); pull the key from `references.bib`.
 - `.latexmkrc` — latexmk config (see Build): `pdflatex` mode, `$aux_dir='tmp'`, `$out_dir='out'`, SyncTeX on, and an `END` block copying `tmp/*.pdf` → `out/`. Compiled output goes to `out/main.pdf`; `tmp/` and `out/` are generated (not source).
 
 ## `docs/refs/` — reference material, not compiled
@@ -55,11 +57,22 @@ Read-only source material for building the final deck. Nothing under here is inc
   - `res-heuristicas-DIGEST.md` / `res-heuristicas-RESPONSE-DIGEST.md` — advisor (Maristela) feedback thread specifically about **NSGA-II factibility**: her objection that NSGA-II solutions can't be compared to the exact method unless proven feasible. Resolved in the final dissertation text (`experimentos-resultados.tex` / `fechamento.tex`): NSGA-II violates only the minimum-coverage constraint (C5/`eq:r6`), never the structural constraints (C1-C4), and this caveat is stated explicitly wherever NSGA-II is compared to exact/MIP-heuristic results. **Any slide comparing NSGA-II to other methods must carry this caveat too.**
   - `URGENTE_artefato_relaxacao.md` — documents one excluded 90-day outlier instance (`2023may01_to_2023jul29`) whose epsilon-grid was invalid due to root-node B&B stagnation; excluded from all final experiments. Don't resurrect its numbers.
 
-## Content delta: qualification deck → dissertation (what must change)
+## Narrative target & headline content
 
-The qualification deck (current `sections/*.tex`) reflects an early, mono-objective-leaning stage of the project (FO1/FO2 as separate mono-objective runs, FO3 hierarchical presented as an open question, only Gurobi exact results, small "resultados-gerais" table). The dissertation is bi-objective throughout and adds two entire method families plus a much larger experimental protocol:
+The study is **bi-objective** throughout: minimize unmet exams (`Z1`) and clinic swaps (`Z2`), solved via the **ε-constraint** method, across three method families. Storytelling arc, section by section: imaging matters but physician scarcity + manual multi-unit scheduling is a costly combinatorial problem the literature barely addresses (**gap**) → formalize it, with a `γ_{iud}` state variable (GLSP-adapted) needed to detect swaps across schedule gaps → three solution families → how we tested (real data, 4 horizons, 2-stage protocol) → what we found → what it means.
 
-- Math model: FO2 (trocas) now uses the `γ_{iud}` state-preservation variable (not in the quali version) to correctly detect swaps across non-working-day gaps.
-- Solution methods: exact ε-restrito (unchanged in spirit) + **Relax-and-Fix / Fix-and-Optimize / Hybrid MIP-heuristics** (new) + **NSGA-II Extended and Compact** (new, with custom day-block crossover, slot-reassignment mutation, constraint-aware sampling).
-- Experiments: 4 horizons (15/30/60/90 days) × 10 instances each (2 parametrization + 8 validation), metrics = hypervolume, Pareto-front amplitude, reference gap, MIP gap, runtime, NSGA-II feasibility rate — none of this exists in the quali deck yet.
-- Headline results to carry into the final deck: regime transition between 15 and 30 days (exact only converges at 15d), Híbrido MIP-heuristic ≈ exact at short horizons, NSGA-II Compacto dominates NSGA-II Estendido everywhere, and the NSGA-II feasibility caveat above.
+Substance to land (all sourced from `docs/refs/dissertacao_tex/2-textual/`):
+
+- **Model:** `Z1` (unmet exams) + `Z2` (swaps); swap detection uses the `γ_{iud}` state-preservation variable so swaps across non-working-day gaps are counted correctly.
+- **Methods:** exact ε-constraint (Gurobi) + **Relax-and-Fix / Fix-and-Optimize / Hybrid** MIP-heuristics + **NSGA-II Extended and Compact** (custom day-block crossover, slot-reassignment mutation, constraint-aware sampling; Compact ≈ w-only encoding, ~70× smaller chromosome).
+- **Experiments:** 4 horizons (15/30/60/90 d) × 10 instances (2 parametrization + 8 validation); metrics = hypervolume, Pareto amplitude, reference gap, MIP gap, runtime, NSGA-II feasibility.
+- **Headline results:** regime transition between 15 and 30 days (exact converges only at 15 d; MIP gap 4%→97% by 90 d), Híbrido ≈ exact at short horizons, NSGA-II Compacto dominates Estendido everywhere, NSGA-II ~7× faster than the MIP family.
+- **NSGA-II feasibility caveat (must appear wherever NSGA-II is compared):** NSGA-II violates only minimum-coverage (C5/`eq:r6`), never structural C1–C4 → not directly comparable to exact/MIP-heuristic fronts; present its results as trends/trade-offs and point to repair operators as future work (see `docs/refs/code/res-heuristicas-*`).
+
+## Rules
+
+- Prioritize visual storytelling over text-heavy slides. Use figures from `img/` (copied from `assets/images/`) wherever possible. Avoid tables of numbers unless they are **key results** (e.g., Pareto front comparisons, hypervolume metrics).
+  - When a given figure is not present, generate a paste-ready prompt with context and file reference for Claude Design. Ask the user to inform you when the figure is ready, then continue.
+- Avoid text-heavy slides. Use bullet points, not paragraphs. Keep each slide to **≤ 6 lines of text** (ideally ≤ 5). Avoid long sentences; use concise phrases.
+- Avoid block-heavt slides with `\begin{block}{}`, unless when necessary for key definition or finding.
+- Avoid monotonous slide layouts.

@@ -1,9 +1,11 @@
-% =====================================================================
-% §1 INTRODUÇÃO
-% Arco: contexto/relevância -> escassez/impacto -> problema real ->
-%       objetivos + virada mono->bi-objetivo (pivô vs. qualificação)
-% =====================================================================
 \section{Introdução}
+
+% Incorporar nessa seção a introdução ao tema e motivação do trabalho, incluindo:
+% - Contextualização do setor de diagnóstico por imagem (escala, relevância econômica e clínica, escassez de profissionais)
+% - Problema abordado (escalonamento médico em múltiplas unidades, compartilhamento de profissionais, complexidade combinatória)
+% - Objetivos
+% Dada a sumarização da seção de Revisão da Litetura, a mesma será incorporada na Seção 1 (Introdução) para manter coesão narrativa.
+% Arco: relevância do setor -> escassez/impacto -> problema -> lacuna (literatura) -> objetivos.
 
 %%% Frame 1.1 — Hook: o setor em números
 \begin{frame}{O setor de diagnóstico por imagem em números}
@@ -16,8 +18,7 @@
         \end{itemize}
     \end{block}
 
-    % TODO: falar 30s sobre a escala do setor como gancho.
-    \vspace{2.5cm}
+    % TODO: usar como gancho — setor grande, relevante e em crescimento.
 \end{frame}
 
 %%% Frame 1.2 — Escassez + impacto operacional
@@ -35,8 +36,9 @@
     \end{block}
     \endgroup
 
-    % TODO: conectar escassez -> necessidade de escalas otimizadas.
-    \vspace{2cm}
+    \begin{block}{}
+        Equipe enxuta $\rightarrow$ escalas bem construídas tornam-se alavanca operacional \cite{Rousseau_Pesant_Gendreau_2002,Robinson_Chen_2003}.
+    \end{block}
 \end{frame}
 
 %%% Frame 1.3 — O problema abordado
@@ -48,7 +50,7 @@
     \begin{block}{Escalonamento médico em rede de clínicas}
         \begin{itemize}
             \item Múltiplas unidades \textbf{autônomas} que compartilham profissionais.
-            \item Escalas feitas \textbf{manualmente} pelo setor de operações: lento, sem garantia de otimalidade.
+            \item Escalas feitas \textbf{manualmente}: lento e sem garantia de otimalidade.
             \item Relação \textit{vários-para-vários} médico--unidade $\rightarrow$ explosão combinatória.
         \end{itemize}
     \end{block}
@@ -57,19 +59,29 @@
     \begingroup
     \setbeamercolor{block title}{fg=white, bg=cyan!40}
     \setbeamercolor{block body}{bg=cyan!10}
-    \begin{block}{Proposta}
-        Gerar escalas otimizadas: maximizar atendimento com a equipe existente \emph{e} minimizar remanejamentos entre unidades \cite{Rousseau_Pesant_Gendreau_2002,Robinson_Chen_2003}.
+    \begin{block}{Duplo desafio}
+        Atender a demanda de exames com a equipe existente \emph{e} evitar remanejamentos excessivos entre unidades.
     \end{block}
     \endgroup
 \end{frame}
 
-%%% Frame 1.4 — Objetivos + virada mono->bi-objetivo
+%%% Frame 1.4 — Lacuna de pesquisa (ponte literatura -> problema)
+\begin{frame}{Lacunas de Pesquisa}
+    \begin{figure}
+        \centering
+        \includegraphics[width=1.02\textwidth]{img/lacuna-literatura.png}
+        \label{fig:lacuna}
+    \end{figure}
+
+\end{frame}
+
+%%% Frame 1.5 — Objetivos + abordagem bi-objetiva
 \begin{frame}{Objetivos da pesquisa}
 
     \begin{block}{}
         \begin{itemize}
-            \item Modelagem matemática do escalonamento médico em múltiplas unidades.
-            \item Investigação \textbf{bi-objetivo}: exames não atendidos \emph{vs.} trocas de clínica.
+            \item Modelar matematicamente o escalonamento médico em múltiplas unidades.
+            \item Tratar o problema como \textbf{bi-objetivo}: exames não atendidos \emph{vs.} trocas de clínica.
             \item Avaliar três famílias de solução: exata, MIP-heurísticas e meta-heurística.
             \item Contribuir para a literatura de escalonamento médico multiunidade.
         \end{itemize}
@@ -78,9 +90,8 @@
     \begingroup
     \setbeamercolor{block title}{fg=white, bg=UFTblue}
     \setbeamercolor{block body}{bg=UFTblue!10}
-    \begin{block}{Evolução desde a qualificação}
-        De objetivos tratados isoladamente para uma formulação \textbf{bi-objetiva} resolvida por método $\varepsilon$-restrito.
+    \begin{block}{Abordagem}
+        Objetivos conflitantes tratados \textbf{conjuntamente} (não mais isolados), via método $\varepsilon$-restrito.
     \end{block}
     \endgroup
-    % TODO: enfatizar que esta é a mudança central do trabalho.
 \end{frame}
