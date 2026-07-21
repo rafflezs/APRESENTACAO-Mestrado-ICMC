@@ -1,6 +1,6 @@
 \label{cap:mip-heuristicas}
 
-Este capítulo detalha as abordagens de solução para o problema. Na Seção \ref{biojetivo} apresenta uma abordagem  Bi-objetivo para o problema, a abordagem \(\epsilon\)-restrito.  A Seção \ref{mipheuristicas}  é dedicada às MIP Heurísticas, onde são apresentados os métodos Relax-and-Fix e Fix-and-Optimize. A Seção \ref{genetico} foca em uma abordagem de Meta-heurística, explorando um Algoritmo Genético baseado no NSGA-2. Serão discutidos os operadores customizados, como cruzamento e mutação, que foram criados para adaptar o algoritmo às especificidades do problema, bem como as variações propostas, como as versões Estendida e Compacta do NSGA-2.
+Este capítulo detalha as abordagens de solução para o problema. Na Seção \ref{biojetivo} apresenta uma abordagem  Bi-objetivo para o problema, a abordagem $\epsilon$-restrito.  A Seção \ref{mipheuristicas}  é dedicada às MIP Heurísticas, onde são apresentados os métodos Relax-and-Fix e Fix-and-Optimize. A Seção \ref{genetico} foca em uma abordagem de Meta-heurística, explorando um Algoritmo Genético baseado no NSGA-2. Serão discutidos os operadores customizados, como cruzamento e mutação, que foram criados para adaptar o algoritmo às especificidades do problema, bem como as variações propostas, como as versões Estendida e Compacta do NSGA-2.
 
 \section{Abordagem Bi-objetivo}\label{biojetivo}
 
@@ -9,18 +9,18 @@ Tome como exemplo o cenário em que um médico com baixa disponibilidade é aloc
 
 Essa dicotomia entre os objetivos caracteriza uma abordagem multiobjetivo (neste caso, bi-objetivo) para o problema, onde é necessário encontrar um equilíbrio entre a minimização de exames não atendidos e a minimização de trocas de clínicas.
 
-Existem diversas formas de se abordar um problema caracterizado multiobjetivo na literatura, como o escalonamento clássico por soma ponderada que de \citeonline{CLARK1983259} sobre otimização com critérios de desempenho de valor não escalar, bem como Programação de Objetivos (do inglês \textit{Goal Programming} ou GP), introduzida por \citeonline{charnes1957management} que modela múltiplas metas e minimiza os desvios em relação a elas. Outros métodos notáveis incluem o de Tchebycheff, proposto por \citeonline{Zelany_1974}, que avalia soluções pela desviação ponderada máxima em relação a um ponto ideal, e o \(\epsilon\)-restrito aumentado, que combina ambos. Neste trabalho, adota-se o método \(\epsilon\)-restrito, discutido na Seção \ref{subsec:eps-restrito-model} a seguir.
+Existem diversas formas de se abordar um problema caracterizado multiobjetivo na literatura, como o escalonamento clássico por soma ponderada que de \citeonline{CLARK1983259} sobre otimização com critérios de desempenho de valor não escalar, bem como Programação de Objetivos (do inglês \textit{Goal Programming} ou GP), introduzida por \citeonline{charnes1957management} que modela múltiplas metas e minimiza os desvios em relação a elas. Outros métodos notáveis incluem o de Tchebycheff, proposto por \citeonline{Zelany_1974}, que avalia soluções pela desviação ponderada máxima em relação a um ponto ideal, e o $\epsilon$-restrito aumentado, que combina ambos. Neste trabalho, adota-se o método $\epsilon$-restrito, discutido na Seção \ref{subsec:eps-restrito-model} a seguir.
 
-\subsection{\texorpdfstring{\(\epsilon\)}{epsilon}-Restrito}
+\subsection{\texorpdfstring{$\epsilon$}{epsilon}-Restrito}
 \label{subsec:eps-restrito-model}
 
-O método \(\epsilon\)-restrito \cite{Haimes_Wismer_1971} transforma um problema multiobjetivo em uma sequência de subproblemas mono-objetivo, ao converter os objetivos secundários em restrições limitadas por um parâmetro \(\epsilon\). Variando sistematicamente \(\epsilon\), obtêm-se soluções eficientes que aproximam a fronteira de Pareto, inclusive em suas regiões não convexas \cite{Saez-Aguado_Trandafir_2018}.
+O método $\epsilon$-restrito \cite{Haimes_Wismer_1971} transforma um problema multiobjetivo em uma sequência de subproblemas mono-objetivo, ao converter os objetivos secundários em restrições limitadas por um parâmetro $\epsilon$. Variando sistematicamente $\epsilon$, obtêm-se soluções eficientes que aproximam a fronteira de Pareto, inclusive em suas regiões não convexas \cite{Saez-Aguado_Trandafir_2018}.
 
-Formalmente, dado um problema bi-objetivo \(\min\{Z_1(x), Z_2(x)\}\) com conjunto de soluções factíveis \(X\), o método \(\epsilon\)-restrito seleciona \(Z_1\) como objetivo primário e converte \(Z_2\) em restrição: minimiza-se \(Z_1(x)\) sujeito a \(Z_2(x) \leq \varepsilon\) e às demais restrições do modelo. O valor de \(\varepsilon\) é variado parametricamente para gerar diferentes pontos da fronteira de Pareto.
+Formalmente, dado um problema bi-objetivo $\min\{Z_1(x), Z_2(x)\}$ com conjunto de soluções factíveis $X$, o método $\epsilon$-restrito seleciona $Z_1$ como objetivo primário e converte $Z_2$ em restrição: minimiza-se $Z_1(x)$ sujeito a $Z_2(x) \leq \varepsilon$ e às demais restrições do modelo. O valor de $\varepsilon$ é variado parametricamente para gerar diferentes pontos da fronteira de Pareto.
 
-Neste trabalho, \(Z_1\) (exames não atendidos) é a função objetivo e \(Z_2\) (trocas de clínica) é convertida em restrição, pois \(Z_2\) assume apenas valores inteiros não-negativos, tornando o intervalo de \(\varepsilon\) finito e enumerável. Os limites do intervalo são determinados por otimização lexicográfica: o ponto Lex-\(Z_1\), obtido minimizando exclusivamente \(Z_1\), fornece \(\varepsilon_{\min}\); o ponto Lex-\(Z_2\), obtido minimizando exclusivamente \(Z_2\), fornece \(\varepsilon_{\max}\). A grade é composta por sete valores uniformemente espaçados em \([\varepsilon_{\min}, \varepsilon_{\max}]\), gerando sete subproblemas independentes cuja solução conjunta constitui a fronteira de Pareto aproximada de cada instância.
+Neste trabalho, $Z_1$ (exames não atendidos) é a função objetivo e $Z_2$ (trocas de clínica) é convertida em restrição, pois $Z_2$ assume apenas valores inteiros não-negativos, tornando o intervalo de $\varepsilon$ finito e enumerável. Os limites do intervalo são determinados por otimização lexicográfica: o ponto Lex-$Z_1$, obtido minimizando exclusivamente $Z_1$, fornece $\varepsilon_{\min}$; o ponto Lex-$Z_2$, obtido minimizando exclusivamente $Z_2$, fornece $\varepsilon_{\max}$. A grade é composta por sete valores uniformemente espaçados em $[\varepsilon_{\min}, \varepsilon_{\max}]$, gerando sete subproblemas independentes cuja solução conjunta constitui a fronteira de Pareto aproximada de cada instância.
 
-O modelo proposto para a abordagem bi-objetivo é apresentado a seguir, onde o objetivo primário é minimizar os exames não atendidos (\(Z_1\)), enquanto a minimização de trocas de clínicas (\(Z_2\)) é tratada como uma restrição, limitando o número de trocas a um valor máximo \(\varepsilon\).
+O modelo proposto para a abordagem bi-objetivo é apresentado a seguir, onde o objetivo primário é minimizar os exames não atendidos ($Z_1$), enquanto a minimização de trocas de clínicas ($Z_2$) é tratada como uma restrição, limitando o número de trocas a um valor máximo $\varepsilon$.
 \begin{alignat}{2}
     \min \sum_{u \in U}\sum_{d \in D}\sum_{t \in T} c_{udt} \quad         &                                              \\
     \text{sujeito a:} \quad                                               &                                              \\
@@ -47,11 +47,11 @@ O modelo proposto para a abordagem bi-objetivo é apresentado a seguir, onde o o
 
 mat-heurísticas são estratégias que exploram a estrutura do modelo MIP para guiar a busca, combinando a formulação exata com a escalabilidade de procedimentos heurísticos. Em problemas de escalonamento em saúde, esse tipo de abordagem é bem utilizada, sobretudo em cenários nos quais o horizonte de planejamento é longo e o número de variáveis binárias torna a resolução exata onerosa. Revisões recentes destacam que heurísticas, meta-heurísticas e mat-heurísticas têm papel central em problemas de \textit{staff scheduling} e \textit{rostering} médico \cite{Ngoo_Goh_Sze_Sabar_Abdullah_Kendall_2022,Abdalkareem2021_ac}.
 
-Neste trabalho, as mat-heurísticas são acopladas ao método \(\varepsilon\)-restrito discutido no Seção~\ref{biojetivo}, atuando como resolvedores internos para cada instância mono-objetivo gerada por um valor de \(\varepsilon\). Dessa forma, cada ponto da fronteira de Pareto é obtido sob o mesmo custo computacional, garantindo comparabilidade entre métodos.
+Neste trabalho, as mat-heurísticas são acopladas ao método $\varepsilon$-restrito discutido no Seção~\ref{biojetivo}, atuando como resolvedores internos para cada instância mono-objetivo gerada por um valor de $\varepsilon$. Dessa forma, cada ponto da fronteira de Pareto é obtido sob o mesmo custo computacional, garantindo comparabilidade entre métodos.
 
 \subsection{Relax-and-Fix}
 
-No problema estudado, o Relax-and-Fix decompõe o horizonte em períodos atômicos \((d,t)\) — combinações de dia \(d \in D\) e turno \(t \in T\), que constituem a menor unidade temporal da formulação —, mantendo a heurística compatível com a estrutura temporal do modelo. Em cada janela, apenas as variáveis associadas às decisões correntes permanecem inteiras, enquanto as de períodos futuros são temporariamente relaxadas para o domínio contínuo, reduzindo a dificuldade do subproblema.
+No problema estudado, o Relax-and-Fix decompõe o horizonte em períodos atômicos $(d,t)$ — combinações de dia $d \in D$ e turno $t \in T$, que constituem a menor unidade temporal da formulação —, mantendo a heurística compatível com a estrutura temporal do modelo. Em cada janela, apenas as variáveis associadas às decisões correntes permanecem inteiras, enquanto as de períodos futuros são temporariamente relaxadas para o domínio contínuo, reduzindo a dificuldade do subproblema.
 
 \begin{algoritmo}
     \caption{Relax-and-Fix para alocação de médicos}
@@ -60,8 +60,8 @@ No problema estudado, o Relax-and-Fix decompõe o horizonte em períodos atômic
         \Require Modelo MIP, \texttt{window\_size\_pct}, \texttt{overlap}, \texttt{total\_time\_limit}, \texttt{polish\_ratio}, \texttt{mip\_gap}
         \Ensure Solução factível refinada
 
-        \State Construir a lista ordenada de períodos \((d,t)\)
-        \State Definir o tamanho da janela \(W\) e particionar os períodos em janelas com sobreposição
+        \State Construir a lista ordenada de períodos $(d,t)$
+        \State Definir o tamanho da janela $W$ e particionar os períodos em janelas com sobreposição
         \State Reservar parte do tempo total para o \textit{polish} final
 
         \For{cada janela}
@@ -82,23 +82,23 @@ No problema estudado, o Relax-and-Fix decompõe o horizonte em períodos atômic
     \end{algorithmic}
 \end{algoritmo}
 
-Formalmente, define-se \(Q\) como o conjunto de índices dos períodos atômicos \((d,t)\) do horizonte de planejamento. Particiona-se \(Q\) em \(R\) conjuntos disjuntos \(Q_1, \ldots, Q_R\), correspondentes às janelas temporais sucessivas. A heurística tenta encontrar uma solução resolvendo subproblemas de forma iterativa e sequencial: inicialmente, todas as variáveis binárias são relaxadas; na iteração \(r=1\), resolve-se \(\text{MIP}^1\) mantendo inteiras as variáveis dos períodos em \(Q_1\); nas iterações \(r=2,\ldots,R\), resolve-se \(\text{MIP}^r\) mantendo inteiras as variáveis de \(Q_r\) e fixando as variáveis estruturais \(w_{iud}\) dos períodos em \(Q_{r-1} \setminus U_{r-1}\) com os valores de \(\text{MIP}^{r-1}\), caso factível; caso contrário, o procedimento é interrompido. A sobreposição entre janelas consecutivas é definida por \(U_r = Q_r \cap Q_{r-1} \neq \emptyset\), com \(r=1,\ldots,R-1\), de modo que os períodos em \(U_r\) são mantidos no domínio original tanto na janela \(r-1\) quanto na janela \(r\), antes de serem fixados.
+Formalmente, define-se $Q$ como o conjunto de índices dos períodos atômicos $(d,t)$ do horizonte de planejamento. Particiona-se $Q$ em $R$ conjuntos disjuntos $Q_1, \ldots, Q_R$, correspondentes às janelas temporais sucessivas. A heurística tenta encontrar uma solução resolvendo subproblemas de forma iterativa e sequencial: inicialmente, todas as variáveis binárias são relaxadas; na iteração $r=1$, resolve-se $\text{MIP}^1$ mantendo inteiras as variáveis dos períodos em $Q_1$; nas iterações $r=2,\ldots,R$, resolve-se $\text{MIP}^r$ mantendo inteiras as variáveis de $Q_r$ e fixando as variáveis estruturais $w_{iud}$ dos períodos em $Q_{r-1} \setminus U_{r-1}$ com os valores de $\text{MIP}^{r-1}$, caso factível; caso contrário, o procedimento é interrompido. A sobreposição entre janelas consecutivas é definida por $U_r = Q_r \cap Q_{r-1} \neq \emptyset$, com $r=1,\ldots,R-1$, de modo que os períodos em $U_r$ são mantidos no domínio original tanto na janela $r-1$ quanto na janela $r$, antes de serem fixados.
 
 Adota-se como parâmetros do Algoritmo~\ref{alg:rnf} os seguintes componentes:
 
 \begin{itemize}
-    \item \texttt{window\_size\_pct} — fração do horizonte que define o tamanho de cada janela \(|Q_r|\);
-    \item \texttt{overlap} — número de períodos compartilhados entre janelas consecutivas (\(|U_r|\));
+    \item \texttt{window\_size\_pct} — fração do horizonte que define o tamanho de cada janela $|Q_r|$;
+    \item \texttt{overlap} — número de períodos compartilhados entre janelas consecutivas ($|U_r|$);
     \item \texttt{total\_time\_limit} — tempo limite total do procedimento;
     \item \texttt{polish\_ratio} — fração do tempo total reservada para a etapa de refinamento com \textit{warm-start};
     \item \texttt{mip\_gap} — tolerância de otimalidade imposta ao \textit{solver} em cada subproblema.
 \end{itemize}
     
-A cada iteração, a heurística fixa principalmente as variáveis \(w_{iud}\), pois elas representam a decisão estrutural de associação diária entre médico e clínica. Ao final, a solução parcial construída ao longo das janelas é utilizada como ponto de partida para uma heurística de refinamento, permitindo recuperar qualidade sem abandonar a estratégia de decomposição temporal \cite{Turhan_Bilgen_2020}. 
+A cada iteração, a heurística fixa principalmente as variáveis $w_{iud}$, pois elas representam a decisão estrutural de associação diária entre médico e clínica. Ao final, a solução parcial construída ao longo das janelas é utilizada como ponto de partida para uma heurística de refinamento, permitindo recuperar qualidade sem abandonar a estratégia de decomposição temporal \cite{Turhan_Bilgen_2020}. 
 
 \subsection{Fix-and-Optimize}
 
-O \textit{Fix-and-Optimize} utiliza a mesma decomposição temporal em períodos \((d,t)\), mas com finalidade distinta da do \textit{Relax-and-Fix}. Em vez de construir a solução progressivamente, o método parte de uma solução inicial viável e resolve sucessivos subproblemas locais, mantendo livre apenas uma vizinhança de períodos por vez.
+O \textit{Fix-and-Optimize} utiliza a mesma decomposição temporal em períodos $(d,t)$, mas com finalidade distinta da do \textit{Relax-and-Fix}. Em vez de construir a solução progressivamente, o método parte de uma solução inicial viável e resolve sucessivos subproblemas locais, mantendo livre apenas uma vizinhança de períodos por vez.
 
 \begin{algoritmo}
     \caption{Fix-and-Optimize para alocação de médicos}
@@ -107,7 +107,7 @@ O \textit{Fix-and-Optimize} utiliza a mesma decomposição temporal em períodos
         \Require Modelo MIP com solução inicial, \texttt{neighborhood\_size\_pct}, \texttt{max\_iterations}, \texttt{total\_time\_limit}, \texttt{mip\_gap}, \texttt{no\_improvement\_limit}
         \Ensure Solução refinada
 
-        \State Construir a lista ordenada de períodos \((d,t)\)
+        \State Construir a lista ordenada de períodos $(d,t)$
         \State Definir o tamanho da vizinhança
         \State Inicializar a melhor solução com a solução inicial disponível
 
@@ -129,7 +129,7 @@ O \textit{Fix-and-Optimize} utiliza a mesma decomposição temporal em períodos
     \end{algorithmic}
 \end{algoritmo}
 
-Na prática, o procedimento mais eficiente é utilizar R\&F como fase construtiva e F\&O como fase de refinamento. Primeiro, obtém-se uma solução factível rapidamente; depois, aplica-se busca local orientada por \textit{MIP} para melhorar a qualidade final. Essa estratégia híbrida é compatível com o método \(\varepsilon\)-restrito e com os limites de tempo adotados em cada instância \cite{Turhan_Bilgen_2020}.
+Na prática, o procedimento mais eficiente é utilizar R\&F como fase construtiva e F\&O como fase de refinamento. Primeiro, obtém-se uma solução factível rapidamente; depois, aplica-se busca local orientada por \textit{MIP} para melhorar a qualidade final. Essa estratégia híbrida é compatível com o método $\varepsilon$-restrito e com os limites de tempo adotados em cada instância \cite{Turhan_Bilgen_2020}.
 
 Do ponto de vista metodológico, essa escolha se justifica porque o problema apresenta estrutura temporal clara, inúmeras variáveis binárias e múltiplas restrições operacionais, favorecendo decomposição e refinamento iterativo. Além disso, revisões recentes em scheduling em saúde apontam que abordagens híbridas são particularmente adequadas para problemas reais, nos quais a escalabilidade é tão importante quanto a qualidade da solução \cite{Vermuyten_Namorado_Rosa_Marques_Belien_Barbosa_Povoa_2018}.
 
@@ -140,7 +140,7 @@ Além das MIP-heurísticas discutidas anteriormente, este trabalho também consi
 
 No escopo deste estudo, um algoritmo genético deve ser entendido como um procedimento iterativo de busca populacional em que cada indivíduo representa uma solução completa para o horizonte de planejamento. Em vez de construir uma única escala por vez, o método trabalha simultaneamente com uma população de soluções candidatas, permitindo explorar diferentes regiões do espaço factível em paralelo. Essa característica é particularmente importante no problema em questão, pois pequenas mudanças nas decisões de alocação médico--clínica--dia--turno podem produzir efeitos significativos sobre os objetivos, e diferentes estruturas de agenda podem apresentar desempenhos semelhantes sob perspectivas distintas.
 
-A aplicação do algoritmo genético é diretamente ancorada na modelagem matemática apresentada no Capítulo~\ref{cap:problema}. Em particular, as soluções manipuladas pela meta-heurística refletem a mesma estrutura de decisão associada às variáveis de alocação por turno \(x_{iudt}\) e de associação diária \(w_{iud}\). Com isso, a busca meta-heurística não atua sobre uma abstração desconectada do problema real, mas sobre representações compatíveis com a lógica operacional da rede de clínicas. Essa aderência é importante tanto para garantir coerência metodológica entre modelagem e solução quanto para facilitar a interpretação prática dos resultados.
+A aplicação do algoritmo genético é diretamente ancorada na modelagem matemática apresentada no Capítulo~\ref{cap:problema}. Em particular, as soluções manipuladas pela meta-heurística refletem a mesma estrutura de decisão associada às variáveis de alocação por turno $x_{iudt}$ e de associação diária $w_{iud}$. Com isso, a busca meta-heurística não atua sobre uma abstração desconectada do problema real, mas sobre representações compatíveis com a lógica operacional da rede de clínicas. Essa aderência é importante tanto para garantir coerência metodológica entre modelagem e solução quanto para facilitar a interpretação prática dos resultados.
 
 Do ponto de vista operacional, uma solução candidata deve representar, para cada médico, sua possível alocação ao longo do horizonte de planejamento, respeitando a disponibilidade informada, as clínicas às quais o profissional pode ser associado, os limites de salas por unidade e a necessidade de cobertura mínima quando existe demanda. Em função disso, o espaço de busca do problema é extremamente restrito e esparso: embora o número de combinações possíveis seja muito elevado, apenas uma fração reduzida dessas combinações resulta em escalas plausíveis. Consequentemente, a aplicação do algoritmo genético neste trabalho exige mecanismos que reduzam a geração de soluções inviáveis e orientem a evolução para regiões estruturalmente promissoras.
 
@@ -169,10 +169,10 @@ De modo geral, a estrutura de aplicação do algoritmo genético neste estudo po
 
         \State Gerar população inicial de soluções candidatas
         \State Avaliar cada indivíduo segundo os objetivos do problema
-        \State Definir a população corrente \(P\)
+        \State Definir a população corrente $P$
 
         \While{critério de parada não for satisfeito}
-        \State Selecionar indivíduos de \(P\) para reprodução
+        \State Selecionar indivíduos de $P$ para reprodução
         \State Aplicar recombinação para gerar descendentes
         \State Aplicar mutação nos descendentes
         \State Avaliar os novos indivíduos gerados
@@ -193,9 +193,9 @@ Em síntese, o papel do algoritmo genético neste trabalho é fornecer um mecani
 
 Para a resolução meta-heurística bi-objetivo do problema, adotou-se o NSGA-II \cite{Deb_Pratap_Agarwal_Meyarivan_2002} como baseline evolutivo. No contexto deste estudo, sua função é construir uma aproximação da fronteira de Pareto formada pelas soluções não dominadas em termos de exames não atendidos e trocas de clínicas. Diferentemente de uma abordagem que reduz o problema a uma única função escalar, o NSGA-II mantém explicitamente o caráter bi-objetivo da formulação, permitindo que diferentes soluções concorrentes coexistam e evoluam simultaneamente ao longo do processo.
 
-A aplicação do NSGA-II parte da mesma estrutura decisória formalizada no Capítulo~\ref{cap:problema}. Na formulação base empregada no projeto, cada indivíduo é representado por um vetor binário concatenando as variáveis \(x_{iudt}\) e \(w_{iud}\). Em outras palavras, o cromossomo codifica diretamente, ao nível de detalhe fino, tanto as alocações de médicos por clínica, dia e turno quanto a associação diária do profissional à unidade. Essa escolha torna a representação plenamente compatível com a modelagem exata, ao custo de uma dimensionalidade elevada do espaço de busca.
+A aplicação do NSGA-II parte da mesma estrutura decisória formalizada no Capítulo~\ref{cap:problema}. Na formulação base empregada no projeto, cada indivíduo é representado por um vetor binário concatenando as variáveis $x_{iudt}$ e $w_{iud}$. Em outras palavras, o cromossomo codifica diretamente, ao nível de detalhe fino, tanto as alocações de médicos por clínica, dia e turno quanto a associação diária do profissional à unidade. Essa escolha torna a representação plenamente compatível com a modelagem exata, ao custo de uma dimensionalidade elevada do espaço de busca.
 
-A avaliação de cada indivíduo é feita com base nos dois objetivos do problema. O primeiro objetivo, denotado por \(F_1\), corresponde à demanda não atendida total ao longo do horizonte. O segundo, \(F_2\), corresponde ao número de trocas de clínica por médico ao longo dos dias. Dessa forma, a qualidade de uma solução é determinada por um vetor bi-objetivo, e não por um único escalar. Em termos práticos, isso implica que a comparação entre indivíduos deve respeitar relações de dominância: uma solução é preferível a outra quando não é pior em nenhum objetivo e é estritamente melhor em pelo menos um deles.
+A avaliação de cada indivíduo é feita com base nos dois objetivos do problema. O primeiro objetivo, denotado por $F_1$, corresponde à demanda não atendida total ao longo do horizonte. O segundo, $F_2$, corresponde ao número de trocas de clínica por médico ao longo dos dias. Dessa forma, a qualidade de uma solução é determinada por um vetor bi-objetivo, e não por um único escalar. Em termos práticos, isso implica que a comparação entre indivíduos deve respeitar relações de dominância: uma solução é preferível a outra quando não é pior em nenhum objetivo e é estritamente melhor em pelo menos um deles.
 
 O mecanismo central do NSGA-II para lidar com isso é a ordenação não-dominada da população. Após a avaliação dos indivíduos, a população é particionada em frentes de Pareto: a primeira frente reúne as soluções não dominadas, a segunda reúne aquelas dominadas apenas pelas da primeira frente, e assim sucessivamente. Esse procedimento permite organizar a população por níveis de qualidade multiobjetivo, sem impor previamente pesos ou prioridades entre os dois objetivos. No presente problema, isso é especialmente importante porque não se deseja privilegiar, de antemão, apenas cobertura da demanda ou apenas estabilidade das agendas, mas sim explorar diferentes balanços entre ambos.
 
@@ -251,20 +251,20 @@ A lógica de execução do NSGA-II empregada neste trabalho pode ser sintetizada
         \State Carregar a instância e construir o problema de alocação
         \State Inicializar os operadores evolutivos
         \State Criar o algoritmo NSGA-II com tamanho populacional predefinido
-        \State Gerar a população inicial \(P_0\)
-        \State Avaliar os objetivos de todos os indivíduos em \(P_0\)
-        \State Definir \(P \leftarrow P_0\)
+        \State Gerar a população inicial $P_0$
+        \State Avaliar os objetivos de todos os indivíduos em $P_0$
+        \State Definir $P \leftarrow P_0$
 
         \While{critério de parada não for satisfeito}
-        \State Selecionar indivíduos de \(P\) para reprodução
-        \State Gerar descendentes \(Q\) por crossover e mutação
-        \State Avaliar os indivíduos de \(Q\)
-        \State Construir \(R \leftarrow P \cup Q\)
-        \State Aplicar ordenação não-dominada em \(R\)
-        \State Construir a nova população \(P\) por frentes e distância de crowding
+        \State Selecionar indivíduos de $P$ para reprodução
+        \State Gerar descendentes $Q$ por crossover e mutação
+        \State Avaliar os indivíduos de $Q$
+        \State Construir $R \leftarrow P \cup Q$
+        \State Aplicar ordenação não-dominada em $R$
+        \State Construir a nova população $P$ por frentes e distância de crowding
         \EndWhile
 
-        \State Extrair as soluções não dominadas de \(P\)
+        \State Extrair as soluções não dominadas de $P$
         \State \Return conjunto aproximado de soluções de Pareto
     \end{algorithmic}
 \end{algoritmo}
@@ -277,7 +277,7 @@ A lógica de execução do NSGA-II empregada neste trabalho pode ser sintetizada
     \fautor
 \end{figure}
 
-O Algoritmo~\ref{alg:nsga2-base} resume o funcionamento do método tal como aplicado neste trabalho. A geração da população inicial fornece um ponto de partida distribuído no espaço de busca. O conjunto de descendentes \(Q\) introduz novas combinações e pequenas perturbações sobre as estruturas já conhecidas. A união \(R = P \cup Q\) materializa o elitismo do método, enquanto a ordenação não-dominada e a distância de \textit{crowding} organizam a sobrevivência multiobjetiva da população. Ao final, o conjunto de soluções não dominadas remanescente representa a aproximação obtida para a fronteira de Pareto sob o orçamento computacional disponível.
+O Algoritmo~\ref{alg:nsga2-base} resume o funcionamento do método tal como aplicado neste trabalho. A geração da população inicial fornece um ponto de partida distribuído no espaço de busca. O conjunto de descendentes $Q$ introduz novas combinações e pequenas perturbações sobre as estruturas já conhecidas. A união $R = P \cup Q$ materializa o elitismo do método, enquanto a ordenação não-dominada e a distância de \textit{crowding} organizam a sobrevivência multiobjetiva da população. Ao final, o conjunto de soluções não dominadas remanescente representa a aproximação obtida para a fronteira de Pareto sob o orçamento computacional disponível.
 
 Do ponto de vista interpretativo, cada solução final produzida pelo NSGA-II corresponde a uma escala médica completa e operacionalmente analisável. Isso significa que os resultados do algoritmo não se limitam a valores abstratos de função objetivo: cada ponto da fronteira aproximada pode ser traduzido em um plano concreto de alocação de médicos por clínicas, dias e turnos. Essa propriedade é importante para a aplicação prática do método, pois permite ao decisor inspecionar diretamente as consequências operacionais de diferentes \textit{trade-offs} entre cobertura da demanda e remanejamento de profissionais.
 
@@ -303,24 +303,24 @@ O pseudocódigo da amostragem é apresentado no Algoritmo~\ref{alg:nsga2-samplin
     \label{alg:nsga2-sampling}
     \begin{algorithmic}[1]
         \Require Problema, tamanho da população, estratégias construtivas
-        \Ensure População inicial \(P_0\)
+        \Ensure População inicial $P_0$
 
         \State Definir quantidades de soluções centrais e extremas
-        \State Inicializar \(P_0 \leftarrow \emptyset\)
+        \State Inicializar $P_0 \leftarrow \emptyset$
 
-        \While{\(|P_0|\) for menor que o tamanho desejado}
+        \While{$|P_0|$ for menor que o tamanho desejado}
         \State Selecionar uma estratégia de construção
         \State Gerar candidatos válidos prioritários
         \State Construir uma solução por inserção gulosa com verificações locais
         \State Executar reforço de cobertura mínima
         \If{a solução não for duplicata}
-        \State Inserir solução em \(P_0\)
+        \State Inserir solução em $P_0$
         \Else
         \State Tentar nova construção com randomização controlada
         \EndIf
         \EndWhile
 
-        \State \Return \(P_0\)
+        \State \Return $P_0$
     \end{algorithmic}
 \end{algoritmo}
 
@@ -338,7 +338,7 @@ A principal vantagem do Algoritmo~\ref{alg:nsga2-sampling} é deslocar parte do 
 
 O operador de cruzamento utilizado no estudo é baseado em blocos diários. A ideia central é decodificar ambos os pais, percorrer os dias do horizonte e, com uma determinada probabilidade, trocar entre eles todos os genes associados àquele dia. Em vez de recombinar posições isoladas do cromossomo, o método troca blocos temporais inteiros, preservando estruturas locais de agenda.
 
-A justificativa para essa escolha é direta. No problema de alocação de médicos, o dia é uma unidade de decisão fortemente estruturada, pois a clínica diária do médico organiza as decisões por turno e afeta diretamente o cálculo de trocas entre unidades. Um cruzamento genérico, ao nível de gene isolado, poderia facilmente destruir coerência entre \(x_{iudt}\) e \(w_{iud}\), gerando descendentes inconsistentes. O cruzamento por dia reduz esse risco, pois mantém juntas as decisões que, do ponto de vista operacional, fazem parte do mesmo bloco lógico.
+A justificativa para essa escolha é direta. No problema de alocação de médicos, o dia é uma unidade de decisão fortemente estruturada, pois a clínica diária do médico organiza as decisões por turno e afeta diretamente o cálculo de trocas entre unidades. Um cruzamento genérico, ao nível de gene isolado, poderia facilmente destruir coerência entre $x_{iudt}$ e $w_{iud}$, gerando descendentes inconsistentes. O cruzamento por dia reduz esse risco, pois mantém juntas as decisões que, do ponto de vista operacional, fazem parte do mesmo bloco lógico.
 
 O funcionamento do operador é mostrado no Algoritmo~\ref{alg:nsga2-crossover}. Primeiro, os pais são decodificados para estruturas explícitas de alocação. Em seguida, percorre-se cada dia do horizonte e decide-se, estocasticamente, se haverá troca daquele bloco. Quando a troca ocorre, intercambiam-se simultaneamente as alocações por turno e a associação diária à clínica. Ao final, os descendentes são re-codificados no formato usado pelo algoritmo.
 
@@ -346,21 +346,21 @@ O funcionamento do operador é mostrado no Algoritmo~\ref{alg:nsga2-crossover}. 
     \caption{Cruzamento por blocos diários}
     \label{alg:nsga2-crossover}
     \begin{algorithmic}[1]
-        \Require Dois indivíduos pais \(p_1\) e \(p_2\), probabilidade de troca diária
-        \Ensure Dois descendentes \(f_1\) e \(f_2\)
+        \Require Dois indivíduos pais $p_1$ e $p_2$, probabilidade de troca diária
+        \Ensure Dois descendentes $f_1$ e $f_2$
 
-        \State Decodificar \(p_1\) em \(\textit{var\_x}_1\) e \(\textit{var\_w}_1\)
-        \State Decodificar \(p_2\) em \(\textit{var\_x}_2\) e \(\textit{var\_w}_2\)
+        \State Decodificar $p_1$ em $\textit{var\_x}_1$ e $\textit{var\_w}_1$
+        \State Decodificar $p_2$ em $\textit{var\_x}_2$ e $\textit{var\_w}_2$
 
-        \For{cada dia \(d \in D\)}
-        \If{ocorrer troca para o dia \(d\)}
-        \State Trocar os blocos de \(x\) do dia \(d\) entre os pais
-        \State Trocar os blocos de \(w\) do dia \(d\) entre os pais
+        \For{cada dia $d \in D$}
+        \If{ocorrer troca para o dia $d$}
+        \State Trocar os blocos de $x$ do dia $d$ entre os pais
+        \State Trocar os blocos de $w$ do dia $d$ entre os pais
         \EndIf
         \EndFor
 
         \State Re-codificar as estruturas geradas
-        \State \Return \(f_1\) e \(f_2\)
+        \State \Return $f_1$ e $f_2$
     \end{algorithmic}
 \end{algoritmo}
 
@@ -378,7 +378,7 @@ A leitura do Algoritmo~\ref{alg:nsga2-crossover} mostra que o operador atua como
 
 A mutação adotada no NSGA-2 customizado segue a lógica de realocação de slot. Em vez de alterar arbitrariamente vários genes do indivíduo, o operador seleciona uma alocação ativa e tenta movê-la para uma clínica alternativa viável no mesmo dia e turno. Com isso, a mutação passa a atuar como um mecanismo de ajuste fino, adequado a um problema em que pequenas mudanças locais podem produzir efeitos relevantes sobre os dois objetivos.
 
-O procedimento começa com a decodificação do indivíduo. Em seguida, o operador escolhe uma atribuição ativa \((i,u,d,t)\) e constrói o conjunto de clínicas candidatas para o mesmo médico, dia e turno. Essa construção já considera disponibilidade, elegibilidade da clínica, capacidade da unidade e consistência da associação diária. Se houver pelo menos uma alternativa válida, o movimento é realizado e o indivíduo é codificado novamente; caso contrário, novas tentativas são feitas até um limite máximo.
+O procedimento começa com a decodificação do indivíduo. Em seguida, o operador escolhe uma atribuição ativa $(i,u,d,t)$ e constrói o conjunto de clínicas candidatas para o mesmo médico, dia e turno. Essa construção já considera disponibilidade, elegibilidade da clínica, capacidade da unidade e consistência da associação diária. Se houver pelo menos uma alternativa válida, o movimento é realizado e o indivíduo é codificado novamente; caso contrário, novas tentativas são feitas até um limite máximo.
 
 O Algoritmo~\ref{alg:nsga2-mutation} resume esse processo. Seu comportamento é conservador por construção: ele não força uma alteração a qualquer custo, mas procura uma mudança local plausível. Se nenhum movimento válido for encontrado após o número máximo de tentativas, o indivíduo original é preservado. Essa decisão evita degradações artificiais da população por mutações excessivamente agressivas.
 
@@ -386,17 +386,17 @@ O Algoritmo~\ref{alg:nsga2-mutation} resume esse processo. Seu comportamento é 
     \caption{Mutação por realocação de slot}
     \label{alg:nsga2-mutation}
     \begin{algorithmic}[1]
-        \Require Indivíduo \(s\), número máximo de tentativas
-        \Ensure Indivíduo mutado \(s'\)
+        \Require Indivíduo $s$, número máximo de tentativas
+        \Ensure Indivíduo mutado $s'$
 
-        \State Decodificar \(s\) em \(\textit{var\_x}\) e \(\textit{var\_w}\)
+        \State Decodificar $s$ em $\textit{var\_x}$ e $\textit{var\_w}$
 
-        \For{tentativa \(=1\) até o máximo permitido}
-        \State Selecionar uma alocação ativa \((i,u,d,t)\)
+        \For{tentativa $=1$ até o máximo permitido}
+        \State Selecionar uma alocação ativa $(i,u,d,t)$
         \State Construir o conjunto de clínicas alternativas viáveis
         \If{o conjunto de alternativas não for vazio}
-        \State Escolher uma nova clínica \(u'\)
-        \State Realocar a atribuição para \((i,u',d,t)\)
+        \State Escolher uma nova clínica $u'$
+        \State Realocar a atribuição para $(i,u',d,t)$
         \State Atualizar a associação diária correspondente
         \State Re-codificar e retornar o indivíduo modificado
         \EndIf
@@ -444,7 +444,7 @@ O pseudocódigo geral da variante é dado no Algoritmo~\ref{alg:nsga2-extended}.
         \Else
         \State Gerar população inicial padrão
         \EndIf
-        \State Avaliar a população inicial \(P\)
+        \State Avaliar a população inicial $P$
 
         \While{critério de parada não for satisfeito}
         \State Determinar o estágio atual da evolução
@@ -473,7 +473,7 @@ O ponto mais importante do Algoritmo~\ref{alg:nsga2-extended} é que ele não su
 \subsection{NSGA-2 Compacto}
 \label{subsec:nsga2-compact}
 
-A motivação para a formulação compacta decorre diretamente da dimensionalidade da representação básica. Quando o cromossomo codifica explicitamente todas as variáveis \(x_{iudt}\) e \(w_{iud}\), o tamanho do indivíduo cresce rapidamente com o número de médicos, clínicas, dias e turnos. Em horizontes longos, esse crescimento compromete o número de gerações possíveis dentro de um tempo computacional fixo. Para reduzir esse custo, foi adotada uma variante compacta em que a decisão genética principal passa a ser a associação diária médico--clínica.
+A motivação para a formulação compacta decorre diretamente da dimensionalidade da representação básica. Quando o cromossomo codifica explicitamente todas as variáveis $x_{iudt}$ e $w_{iud}$, o tamanho do indivíduo cresce rapidamente com o número de médicos, clínicas, dias e turnos. Em horizontes longos, esse crescimento compromete o número de gerações possíveis dentro de um tempo computacional fixo. Para reduzir esse custo, foi adotada uma variante compacta em que a decisão genética principal passa a ser a associação diária médico--clínica.
 
 \begin{figure}[htb]
     \centering
@@ -483,11 +483,11 @@ A motivação para a formulação compacta decorre diretamente da dimensionalida
     \fautor
 \end{figure}
 
-Na formulação compacta, cada gene representa um par médico--dia. O valor do gene indica a clínica atribuída naquele dia ou ausência de alocação. Com isso, o cromossomo passa a codificar diretamente a estrutura diária da agenda, isto é, uma representação análoga à variável \(w\), sem carregar explicitamente todas as alocações por turno no nível genético. A principal consequência é uma redução expressiva da dimensionalidade do espaço de busca.
+Na formulação compacta, cada gene representa um par médico--dia. O valor do gene indica a clínica atribuída naquele dia ou ausência de alocação. Com isso, o cromossomo passa a codificar diretamente a estrutura diária da agenda, isto é, uma representação análoga à variável $w$, sem carregar explicitamente todas as alocações por turno no nível genético. A principal consequência é uma redução expressiva da dimensionalidade do espaço de busca.
 
 Essa mudança exige uma etapa de avaliação mais elaborada. Como o cromossomo não contém a forma completa da solução, é necessário decodificar a atribuição diária e expandi-la para uma representação operacional compatível com o cálculo dos objetivos. A partir dessa expansão, calcula-se a demanda não atendida por clínica, dia e turno e, em seguida, o número de trocas de clínicas por médico ao longo do horizonte. Assim, a compactação altera a forma de representar a solução, mas não altera os objetivos que orientam a busca.
 
-O Algoritmo~\ref{alg:compact-eval} descreve a lógica da avaliação compacta. Primeiro, decodifica-se o cromossomo em uma matriz médico--dia. Depois, essa matriz é expandida para uma representação completa compatível com a disponibilidade e com a lógica operacional do problema. A seguir, calcula-se \(F_1\) somando os exames não atendidos e \(F_2\) contabilizando as trocas de clínica. Esse algoritmo é o elo entre a representação reduzida e a formulação bi-objetiva original.
+O Algoritmo~\ref{alg:compact-eval} descreve a lógica da avaliação compacta. Primeiro, decodifica-se o cromossomo em uma matriz médico--dia. Depois, essa matriz é expandida para uma representação completa compatível com a disponibilidade e com a lógica operacional do problema. A seguir, calcula-se $F_1$ somando os exames não atendidos e $F_2$ contabilizando as trocas de clínica. Esse algoritmo é o elo entre a representação reduzida e a formulação bi-objetiva original.
 
 \newpage
 
@@ -495,24 +495,24 @@ O Algoritmo~\ref{alg:compact-eval} descreve a lógica da avaliação compacta. P
     \caption{Avaliação de um indivíduo no NSGA-2-Compacto}
     \label{alg:compact-eval}
     \begin{algorithmic}[1]
-        \Require Cromossomo compacto \(y\)
-        \Ensure Vetor de objetivos \((F_1,F_2)\)
+        \Require Cromossomo compacto $y$
+        \Ensure Vetor de objetivos $(F_1,F_2)$
 
-        \State Decodificar \(y\) em matriz de atribuição diária médico--clínica
+        \State Decodificar $y$ em matriz de atribuição diária médico--clínica
         \State Expandir a atribuição para uma representação operacional
-        \State Inicializar \(F_1 \leftarrow 0\) e \(F_2 \leftarrow 0\)
+        \State Inicializar $F_1 \leftarrow 0$ e $F_2 \leftarrow 0$
 
-        \For{cada unidade \(u\), dia \(d\) e turno \(t\)}
+        \For{cada unidade $u$, dia $d$ e turno $t$}
         \State Calcular a capacidade total disponível na unidade
-        \State Atualizar \(F_1\) com os exames não atendidos
+        \State Atualizar $F_1$ com os exames não atendidos
         \EndFor
 
-        \For{cada médico \(i\)}
+        \For{cada médico $i$}
         \State Percorrer os dias considerando o estado inicial
-        \State Incrementar \(F_2\) quando houver troca de clínica
+        \State Incrementar $F_2$ quando houver troca de clínica
         \EndFor
 
-        \State \Return \((F_1,F_2)\)
+        \State \Return $(F_1,F_2)$
     \end{algorithmic}
 \end{algoritmo}
 
@@ -539,7 +539,7 @@ A lógica global da variante compacta é apresentada no Algoritmo~\ref{alg:nsga2
         \State Inicializar os operadores compactos
         \State Gerar a população inicial
         \State Avaliar a população inicial por decodificação e expansão
-        \State Definir a população corrente \(P\)
+        \State Definir a população corrente $P$
 
         \While{critério de parada não for satisfeito}
         \State Gerar descendentes por seleção, crossover e mutação compactos

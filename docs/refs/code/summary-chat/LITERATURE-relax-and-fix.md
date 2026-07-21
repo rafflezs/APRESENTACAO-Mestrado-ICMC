@@ -10,14 +10,14 @@ Based on my comprehensive research, I now have sufficient information to provide
 
 ### Core Parametrization Framework
 
-The **three-window decomposition structure** (foundational for physician scheduling applications) partitions the scheduling horizon \([1, T]\) into:
+The **three-window decomposition structure** (foundational for physician scheduling applications) partitions the scheduling horizon $[1, T]$ into:
 
-**1. Frozen Window** \([1, a_k - 1]\)
+**1. Frozen Window** $[1, a_k - 1]$
 - **Setup variables fixed** from previous iterations  
 - **Production/assignment variables optionally frozen**
 - Reduces computational burden by eliminating integrality constraints for already-decided periods[1]
 
-**2. Decision Window** \([a_k, b_k]\) **(size σ_k - the primary parameter)**
+**2. Decision Window** $[a_k, b_k]$ **(size σ_k - the primary parameter)**
 - **Integrality constraints maintained** on binary variables  
 - Full mixed-integer model solved via branch-and-bound
 - For physician scheduling: **dimension choices are critical**
@@ -25,7 +25,7 @@ The **three-window decomposition structure** (foundational for physician schedul
   - **By week**: σ_k = 1-2 weeks for biweekly/monthly rosters
   - **By physician group/clinic**: Decompose across physician pools or departments simultaneously[2][4]
 
-**3. Approximation Window** \([b_k + 1, c_k]\) **(size ρ_k)**
+**3. Approximation Window** $[b_k + 1, c_k]$ **(size ρ_k)**
 - **Integrality constraints relaxed** (continuous variables)
 - Provides lower bound on capacity/resource requirements
 - Critical in **Double-Fix-and-Relax (DFR)**: provides "default estimation" of demand anticipation for future periods[1]

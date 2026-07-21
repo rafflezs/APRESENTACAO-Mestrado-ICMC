@@ -1,7 +1,146 @@
-\section{Experimentos e Resultados}
+\section{Resultados e Discussão}
 
 % Desenvolver e discutir resultados obtidos (sem elaborar em detalhes de experimentos, que já foram descritos na seção anterior), incluindo:
 % - Comparativos de resultados (parâmetros, instâncias, métricas) agrupados por métodos
 % - Observações sobre a natureza multi-objetivo do problema e a influência da parametrização do $\varepsilon$-restrito
 % - Comparativo cross-methods (MIP vs. heurísticas vs. metaheurísticas) com adendo a violçao da restrição no algoritmo genético (observa-se que os métodos não são diretamente comparáveis, mas é possível observar tendências, trade-offs e preparar perspectivas de trabalhos futuros)
 % - Observações sobre a convergência do NSGA-II e a influência da parametrização
+% Fonte: experimentos-resultados.tex + docs/refs/code/{NSGA-2-limitacoes,analysis_compact_vs_exact_vs_extended}.md
+% Arco: transição de regime -> Pareto -> hipervolume -> escalabilidade -> parametrização -> factibilidade -> síntese.
+
+%%% Frame 5.1 — HEADLINE: transição de regime 15->30d
+\begin{frame}{Resultado central: transição de regime (15 $\rightarrow$ 30 dias)}
+    \begin{columns}[c]
+        \begin{column}{0.33\textwidth}
+            \footnotesize
+            \begin{tabular}{ccc}
+                \toprule
+                \textbf{Hor.} & \textbf{MIP gap} & \textbf{$\varepsilon$ ótimos} \\
+                \midrule
+                15 d & 4,1\%  & 3 / 7 \\
+                30 d & 42,7\% & 0 / 7 \\
+                60 d & 78,1\% & 0 / 7 \\
+                90 d & 96,8\% & 0 / 7 \\
+                \bottomrule
+            \end{tabular}
+        \end{column}
+        \begin{column}{0.65\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=\linewidth]{img/exato_mipgap_heatmap_30days.png}
+                \caption{\footnotesize MIP gap por instância (30 d).}
+                \label{fig:mipgap}
+            \end{figure}
+        \end{column}
+    \end{columns}
+    \begingroup
+    \setbeamercolor{block title}{fg=white, bg=UFTblue}
+    \setbeamercolor{block body}{bg=UFTblue!10}
+    \begin{block}{}
+        Exato converge só no ciclo quinzenal; a partir de 30 d $\rightarrow$ heurísticas \textbf{necessárias}.
+    \end{block}
+    \endgroup
+\end{frame}
+
+%%% Frame 5.2 — Fronteiras de Pareto comparativas
+\begin{frame}{Fronteiras de Pareto comparativas}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.88\linewidth]{img/pareto_comparativo_todos_horizontes.png}
+        \caption{Fronteiras por horizonte: Exato, RF, Híbrido, NSGA-IIe, NSGA-IIc.}
+        \label{fig:pareto}
+    \end{figure}
+    {\footnotesize Em 15 d as curvas se aproximam do ótimo; em 60--90 d a referência exata é sub-ótima.}
+\end{frame}
+
+%%% Frame 5.3 — Qualidade: hipervolume relativo
+\begin{frame}{Qualidade: hipervolume relativo ao exato}
+    \begin{center}
+        \footnotesize
+        \begin{tabular}{lcccc}
+            \toprule
+            \textbf{Método} & \textbf{15 d} & \textbf{30 d} & \textbf{60 d} & \textbf{90 d} \\
+            \midrule
+            Exato    & 1,000 & 1,000 & 1,000 & 1,000 \\
+            RF       & 0,984 & 0,852 & 1,158 & 4,213 \\
+            Híbrido  & 0,996 & 1,008 & 0,938 & 1,941 \\
+            NSGA-IIe & 0,279 & 0,023 & 0,736 & 10,190 \\
+            NSGA-IIc & 0,382 & 0,217 & 1,039 & 12,888 \\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \vspace{0.4em}
+    \begin{itemize}
+        \item Híbrido $\approx$ exato em 15 e 30 d.
+        \item HV $>1$ em horizontes longos: referência exata \textbf{não convergiu}.
+    \end{itemize}
+\end{frame}
+
+%%% Frame 5.4 — Escalabilidade e tempo
+\begin{frame}{Desempenho e escalabilidade}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.72\linewidth]{img/escalabilidade_metodos.png}
+        \caption{Tempo de execução \emph{vs.} horizonte de planejamento.}
+        \label{fig:escala}
+    \end{figure}
+    {\footnotesize MIP saturam o limite de tempo ($\approx$25.200\,s / fronteira); NSGA-II $\approx$3.600\,s $\rightarrow$ $\sim$7$\times$ mais rápido.}
+\end{frame}
+
+%%% Frame 5.5 — Parametrização
+\begin{frame}{Parametrização}
+    \begin{columns}[c]
+        \begin{column}{0.6\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=\linewidth]{img/param_nsga2_heatmap.png}
+                \caption{\footnotesize HV relativo: população $\times$ mutação.}
+                \label{fig:param-nsga}
+            \end{figure}
+        \end{column}
+        \begin{column}{0.4\textwidth}
+            \footnotesize
+            \begin{itemize}
+                \item NSGA-II \textbf{Compacto} (\textit{allon}): HV 0,67--0,72.
+                \item \textbf{Estendido}: 0,47--0,51.
+                \item MIP-heur.: RF w75/o2 e Híbrido w50/o2 selecionados.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+%%% Frame 5.6 — Factibilidade do NSGA-II (subseção)
+\subsection{Factibilidade do NSGA-II}
+\begin{frame}{Factibilidade do NSGA-II}
+
+    \begingroup
+    \setbeamercolor{block title}{fg=white, bg=red!40}
+    \setbeamercolor{block body}{bg=red!10}
+    \begin{block}{Incongruência comparativa}
+        NSGA-II não satisfaz (R\ref{eq:r6}) \(\rightarrow\) \textbf{não comparável diretamente} ao MIP.
+    \end{block}
+    \endgroup
+
+    \vspace{0.5cm}
+
+    \begin{itemize}
+        \item Estruturais R\ref{eq:r1}--R\ref{eq:r4}: satisfeitas (Estendido 100\%, Compacto 89,8\%).
+        \item Cobertura mínima violada em 4--6\% dos períodos (turno vespertino).
+        \item Compacto: 10,2\% violam capacidade de sala (R\ref{eq:r5}, clínica U06).
+    \end{itemize}
+    
+    \vspace{0.2cm}
+
+    {\footnotesize Encaminhamento: tendências e \textit{trade-offs} $\rightarrow$ \textbf{operador de reparo} (trabalho futuro).}
+
+\end{frame}
+
+%%% Frame 5.7 — Discussão: síntese
+\begin{frame}{Sumarizando}
+    \begin{itemize}
+        \item[\textbf{1.}] \textbf{Exato} escala mal: ótimo em 15 d; $\geq$30 d satura o tempo (gap $>40\%$).
+        \item[\textbf{2.}] \textbf{Híbrido} supera RF em horizontes curtos; RF puro é 30--55\% mais rápido.
+        \item[\textbf{3.}] \textbf{NSGA-IIc} domina o Estendido; ``supera'' o exato em 60 d apenas por referência sub-ótima.
+        \item[\textbf{4.}] \textbf{Factibilidade} parcial do NSGA-II aponta o próximo passo: reparo de cobertura.
+    \end{itemize}
+\end{frame}

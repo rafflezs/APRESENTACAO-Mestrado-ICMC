@@ -52,19 +52,19 @@ Para tal atendimento, portanto, é necessário alocar um médico a uma sala, sem
 
 \section{Modelagem Matemática}
 
-O problema é modelado como uma otimização inteira, em que cada médico pode ser alocado a no máximo, uma unidade por turno, sem a possibilidade de trabalhar em mais de uma unidade no mesmo período, respeitando a disponibilidade do mesmo.  Define-se por período o  \(\mbox{dia}\) da semana, sendo que esse é dividido em  \(\mbox{turnos}\). Cada dia da semana possui dois turnos (manhã e tarde), incluindo o domingo, que, para fins de modelagem, mesmo que não possua demanda vespertina, ainda é incorporado no modelo com demandas e disponibilidades \(0\). Dessa forma é possível sempre representar o período a partir da tupla \(d \times t\). Além disso, a quantidade de profissionais alocados não pode exceder a capacidade da unidade, definida pelo número de salas disponíveis para exames. Por fim, sempre que alguma unidade tiver demanda em um período e turno, impreterivelmente, ao menos um médico deverá ser alocado a ela para garantir cobertura mínima da unidade.
+O problema é modelado como uma otimização inteira, em que cada médico pode ser alocado a no máximo, uma unidade por turno, sem a possibilidade de trabalhar em mais de uma unidade no mesmo período, respeitando a disponibilidade do mesmo.  Define-se por período o  $\mbox{dia}$ da semana, sendo que esse é dividido em  $\mbox{turnos}$. Cada dia da semana possui dois turnos (manhã e tarde), incluindo o domingo, que, para fins de modelagem, mesmo que não possua demanda vespertina, ainda é incorporado no modelo com demandas e disponibilidades $0$. Dessa forma é possível sempre representar o período a partir da tupla $d \times t$. Além disso, a quantidade de profissionais alocados não pode exceder a capacidade da unidade, definida pelo número de salas disponíveis para exames. Por fim, sempre que alguma unidade tiver demanda em um período e turno, impreterivelmente, ao menos um médico deverá ser alocado a ela para garantir cobertura mínima da unidade.
 
 \newpage
 
 \begin{small}
 	\begin{tabular}{ll}
 		\multicolumn{2}{l}{\textbf{Índices, conjuntos e subconjuntos}} \\
-		\(i \in I\)       \quad & Médicos                                \\
-		\(u \in U\)       \quad & Unidades                               \\
-		\(U_i\)           \quad & Unidades atendidas pelo médico \(i\)     \\
-		\(I_u\)           \quad & Médicos que atendem na unidade \(u\)     \\
-		\(d \in D\)       \quad & Dias                                   \\
-		\(t \in T\)       \quad & Turnos                                 \\
+		$i \in I$       \quad & Médicos                                \\
+		$u \in U$       \quad & Unidades                               \\
+		$U_i$           \quad & Unidades atendidas pelo médico $i$     \\
+		$I_u$           \quad & Médicos que atendem na unidade $u$     \\
+		$d \in D$       \quad & Dias                                   \\
+		$t \in T$       \quad & Turnos                                 \\
 	\end{tabular}
 \end{small}
 
@@ -73,27 +73,27 @@ O problema é modelado como uma otimização inteira, em que cada médico pode s
 \begin{small}
 	\begin{tabular}{ll}
 		\multicolumn{2}{l}{\textbf{Parâmetros}}                                                                                    \\
-		\(e_{udt}\)       \quad & Demanda por exames na unidade \(u\) no dia \(d\) e turno \(t\)                                           \\
-		\(s_{ut}\)       \quad  & Salas disponíveis para exames na unidade \(u\) no dia \(d\) e turno \(t\)                                \\
-		\(q_{idt}\)      \quad  & Quantidades de exames que o médico \(i\) pode realizar dia \(d\) e turno \(t\)                           \\
-		\(a_{idt}\)      \quad  & \(\begin{cases} 1, & \text{se o médico $i$ estiver disponível para trabalho no dia $d$ e turno $t$} \\
-              0, & \text{caso contrário.}\end{cases} \) \\
-		\(b_{udt}\)      \quad  & \(\begin{cases} 1, & \text{se a unidade $u$ tem demanda no dia $d$ e turno $t$} \\
-              0, & \text{caso contrário.}\end{cases} \)
+		$e_{udt}$       \quad & Demanda por exames na unidade $u$ no dia $d$ e turno $t$                                           \\
+		$s_{ut}$       \quad  & Salas disponíveis para exames na unidade $u$ no dia $d$ e turno $t$                                \\
+		$q_{idt}$      \quad  & Quantidades de exames que o médico $i$ pode realizar dia $d$ e turno $t$                           \\
+		$a_{idt}$      \quad  & $\begin{cases} 1, & \text{se o médico $i$ estiver disponível para trabalho no dia $d$ e turno $t$} \\
+              0, & \text{caso contrário.}\end{cases} $ \\
+		$b_{udt}$      \quad  & $\begin{cases} 1, & \text{se a unidade $u$ tem demanda no dia $d$ e turno $t$} \\
+              0, & \text{caso contrário.}\end{cases} $
 	\end{tabular}
 \end{small}
 
-O parâmetro \(q_{idt}\) é estimado com base na quantidade de horas do turno e no fato de que cada exame, gasta-se um tempo médio de 15 minutos, conforme levantando \citeonline{conselho_regional_de_medicina_do_estado_do_parana_2022}.
-Salienta-se que parâmetros auxiliares como \(b_{udt}\) ou \(a_{idt}\), que indicam a existência de demanda ou disponibilidade, respectivamente, tem por finalidade facilitar a linearização do modelo, uma vez que suas informações são diretamente baseadas em outros parâmetros, como \(e_{udt}\) e \(q_{idt}\), respectivamente. Dessa forma, sabemos que caso o valor de \(e_{udt}\) seja maior que \(0\), necessariamente, o valor de \(b_{udt}\) será \(1\), indicando a existência de demanda. De maneira similar, caso o valor de \(q_{idt}\) seja maior que \(0\), o valor de \(a_{idt}\) será \(1\), indicando a disponibilidade do profissional para atendimento.
+O parâmetro $q_{idt}$ é estimado com base na quantidade de horas do turno e no fato de que cada exame, gasta-se um tempo médio de 15 minutos, conforme levantando \citeonline{conselho_regional_de_medicina_do_estado_do_parana_2022}.
+Salienta-se que parâmetros auxiliares como $b_{udt}$ ou $a_{idt}$, que indicam a existência de demanda ou disponibilidade, respectivamente, tem por finalidade facilitar a linearização do modelo, uma vez que suas informações são diretamente baseadas em outros parâmetros, como $e_{udt}$ e $q_{idt}$, respectivamente. Dessa forma, sabemos que caso o valor de $e_{udt}$ seja maior que $0$, necessariamente, o valor de $b_{udt}$ será $1$, indicando a existência de demanda. De maneira similar, caso o valor de $q_{idt}$ seja maior que $0$, o valor de $a_{idt}$ será $1$, indicando a disponibilidade do profissional para atendimento.
 
 \begin{small}
 	\begin{tabular}{ll}
 		\multicolumn{2}{l}{\textbf{Variáveis}}                                                                                                                   \\
-		\(x_{iudt}\)       \quad & \( \begin{cases} 1, & \text{se o médico $i$ está alocado na unidade $u$ no dia $d$ e turno $t$} \\    0, & \text{caso contrário.}
-			                           \end{cases} \) \\
-		\(w_{iud}\)       \quad  & \( \begin{cases} 1, & \text{se o médico $i$ está alocado na unidade $u$ durante o dia $d$} \\    0, & \text{caso contrário.}
-			                           \end{cases} \)      \\
-		\(z_{id}\)       \quad   & \( \begin{cases} 1, & \text{se o médico $i$ trocou de unidade no dia $d$} \\    0, & \text{caso contrário.} \end{cases} \)        \\
+		$x_{iudt}$       \quad & $ \begin{cases} 1, & \text{se o médico $i$ está alocado na unidade $u$ no dia $d$ e turno $t$} \\    0, & \text{caso contrário.}
+			                           \end{cases} $ \\
+		$w_{iud}$       \quad  & $ \begin{cases} 1, & \text{se o médico $i$ está alocado na unidade $u$ durante o dia $d$} \\    0, & \text{caso contrário.}
+			                           \end{cases} $      \\
+		$z_{id}$       \quad   & $ \begin{cases} 1, & \text{se o médico $i$ trocou de unidade no dia $d$} \\    0, & \text{caso contrário.} \end{cases} $        \\
 	\end{tabular}
 \end{small}
 
@@ -114,10 +114,10 @@ O conjunto de restrições (\ref{eq:r1}) assegura que o médico só será alocad
 \subsection{Funções Objetivo}
 Mediante a necessidade de atender os problemas observados pela rede de clínicas, a investigação das hipóteses levantadas na Tabela \ref{tab:hipoteses-modelagem} proporcionaram para o estudo objetivos distintos a serem contemplados. A nível operacional, têm-se a cobertura dos exames clínicos, tratando da minimização de exames não atendidos, e consequentemente o fluxo de operações e caixa dessa modalidade. No nível ergonômico, as realocações de médicos ao longo do horizonte de planejamento têm por objetivo minimizar o número de trocas de clínica, evitando o excesso de remanejamentos nas agendas médicas que reflete na rotatividade de funcionários e relação com o paciente. Ambos os casos têm implicações diretas na modelagem e solução do problema. Decorre-se a seguir, detalhadamente, a modelagem de cada função objetivo contemplada, suas justificativas e implicações para o problema em questão.
 
-\subsubsection{\(Z_1\) - Minimizar Exames Não Atendidos}
+\subsubsection{$Z_1$ - Minimizar Exames Não Atendidos}
 \label{subsec:fo1}
 
-Conforme discorrido no início da Seção \ref{cap:problema}, é conhecida, mesmo que por estimativa, uma demanda \(e_{udt}\) de exames a serem realizados para uma unidade em um período qualquer, da mesma maneira que se conhece a disponibilidade de atendimento \(a_{idt}\) e a quantidade de exames possíveis \(q_{idt}\) de um médico para diariamente e períodos. Considera-se por exame não atendimento, portanto, o excedente de exames que não puderam ser atendidos pelos médicos disponíveis na ocasião, introduzido ao modelo as restrições (\ref{eq:fo1-r1}) que computam a diferenças, para cada clínica, em todos os períodos. Para modelar essa situação, consideram-se as novas variáveis \(c_{udt}\) que representam a quantidade  de exames não atendidos na unidade  \(u\), no turno \(t\), no dia \(d\).
+Conforme discorrido no início da Seção \ref{cap:problema}, é conhecida, mesmo que por estimativa, uma demanda $e_{udt}$ de exames a serem realizados para uma unidade em um período qualquer, da mesma maneira que se conhece a disponibilidade de atendimento $a_{idt}$ e a quantidade de exames possíveis $q_{idt}$ de um médico para diariamente e períodos. Considera-se por exame não atendimento, portanto, o excedente de exames que não puderam ser atendidos pelos médicos disponíveis na ocasião, introduzido ao modelo as restrições (\ref{eq:fo1-r1}) que computam a diferenças, para cada clínica, em todos os períodos. Para modelar essa situação, consideram-se as novas variáveis $c_{udt}$ que representam a quantidade  de exames não atendidos na unidade  $u$, no turno $t$, no dia $d$.
 
 \begin{alignat}{2}
 	c_{udt} \geq e_{udt} - \sum_{i \in I_u}(q_{iut} \cdot x_{iudt}) \quad & \forall u \in U, d \in D, t \in T \label{eq:fo1-r1}            \\
@@ -131,7 +131,7 @@ Dessa forma, o sistema pode ser modelado nessa ocasião como um problema de mini
 \end{equation}
 
 
-\subsubsection{\(Z_2\) - Minimizar Trocas de Clínicas}
+\subsubsection{$Z_2$ - Minimizar Trocas de Clínicas}
 \label{subsec:fo2}
 
 Para este problema, define-se por troca toda ação de remanejar um profissional de uma clínica para outra durante a transição entre dias. Tomando como exemplo a Figura \ref{fig:ex-troca-medico}, a verificação de remanejamento é binária (o médico trocou ou não de clínica entre dias), devido às restrições (\ref{eq:r2}) e (\ref{eq:r3}), que impedem o profissional de trabalhar em mais de uma unidade no dia.
@@ -144,27 +144,27 @@ Para este problema, define-se por troca toda ação de remanejar um profissional
 	\fautor
 \end{figure}
 
-Entretanto, dada a irregularidade da agenda dos profissionais, é possível que existam lacunas (dias sem trabalho) entre alocações consecutivas. A simples comparação de variáveis \(w\) entre dias consecutivos não é suficiente para detectar trocas que ocorram através dessas lacunas. Por exemplo, se um médico atua na clínica \(u\) nos dias 1 e 2, não trabalha nos dias 3 e 4, e retorna à clínica \(u' \neq u\) no dia 5, a troca de \(u\) para \(u'\) deve ser detectada. Para contornar essa limitação, introduz-se a variável de estado \(\gamma_{iud}\), baseada nos estudos em \textit{GLSP - General Lot-sizing and Scheduling Problem} de \citeonline{Fleischmann_Meyr_1997}, que registra a qual clínica o profissional está conceitualmente associado em cada dia, independentemente de estar efetivamente alocado. Esse estado persiste durante dias sem alocação, viabilizando a detecção correta de trocas ao longo de lacunas na agenda.
+Entretanto, dada a irregularidade da agenda dos profissionais, é possível que existam lacunas (dias sem trabalho) entre alocações consecutivas. A simples comparação de variáveis $w$ entre dias consecutivos não é suficiente para detectar trocas que ocorram através dessas lacunas. Por exemplo, se um médico atua na clínica $u$ nos dias 1 e 2, não trabalha nos dias 3 e 4, e retorna à clínica $u' \neq u$ no dia 5, a troca de $u$ para $u'$ deve ser detectada. Para contornar essa limitação, introduz-se a variável de estado $\gamma_{iud}$, baseada nos estudos em \textit{GLSP - General Lot-sizing and Scheduling Problem} de \citeonline{Fleischmann_Meyr_1997}, que registra a qual clínica o profissional está conceitualmente associado em cada dia, independentemente de estar efetivamente alocado. Esse estado persiste durante dias sem alocação, viabilizando a detecção correta de trocas ao longo de lacunas na agenda.
 Dessa forma, ao invés de dinamicamente computar trocas entre unidades, é possível reduzir o problema a uma comparação estática entre o estado do profissional em dias consecutivos, mesmo que haja lacunas entre eles, garantindo a correta contabilização de trocas.
 
-Introduz-se também o parâmetro \(CI\), vetor de tamanho \(|I|\), representando a clínica à qual o profissional estava alocado em um período anterior ao horizonte de planejamento. Na ausência de condição inicial, todos os valores do vetor são \(0\), indicando que o médico não estava previamente associado a nenhuma clínica.
+Introduz-se também o parâmetro $CI$, vetor de tamanho $|I|$, representando a clínica à qual o profissional estava alocado em um período anterior ao horizonte de planejamento. Na ausência de condição inicial, todos os valores do vetor são $0$, indicando que o médico não estava previamente associado a nenhuma clínica.
 
 \begin{small}
 	\begin{tabular}{ll}
 		\multicolumn{2}{l}{\textbf{Parâmetros}}                                                                    \\
-		\(CI_{i}\) \quad & Unidade à qual o profissional \(i\) estava alocado no dia precedente a \(d=1\) (no dia \(d=0\)) \\
+		$CI_{i}$ \quad & Unidade à qual o profissional $i$ estava alocado no dia precedente a $d=1$ (no dia $d=0$) \\
 	\end{tabular}
 \end{small}
 
 \begin{small}
 	\begin{tabular}{ll}
 		\multicolumn{2}{l}{\textbf{Variáveis}}                                                                                                                                    \\
-		\(\gamma_{iud}\)       \quad & \( \begin{cases} 1, & \text{se o estado do médico $i$ é a clínica $u$ no dia $d$ (mesmo sem alocação ativa)} \\    0, & \text{caso contrário.}
-			                               \end{cases} \) \\
+		$\gamma_{iud}$       \quad & $ \begin{cases} 1, & \text{se o estado do médico $i$ é a clínica $u$ no dia $d$ (mesmo sem alocação ativa)} \\    0, & \text{caso contrário.}
+			                               \end{cases} $ \\
 	\end{tabular}
 \end{small}
 
-As restrições (\ref{eq:gamma-def}--\ref{eq:gamma-sum}) definem o comportamento da variável de estado. A restrição (\ref{eq:gamma-def}) garante que, ao ser alocado a uma clínica no dia \(d\), o estado do profissional é atualizado para essa clínica. A restrição (\ref{eq:gamma-sum}) assegura que exatamente uma clínica permanece como estado corrente do profissional em cada dia, preservando o estado durante dias sem alocação.
+As restrições (\ref{eq:gamma-def}--\ref{eq:gamma-sum}) definem o comportamento da variável de estado. A restrição (\ref{eq:gamma-def}) garante que, ao ser alocado a uma clínica no dia $d$, o estado do profissional é atualizado para essa clínica. A restrição (\ref{eq:gamma-sum}) assegura que exatamente uma clínica permanece como estado corrente do profissional em cada dia, preservando o estado durante dias sem alocação.
 
 \begin{alignat}{2}
 	\gamma_{iud} \geq w_{iud} \quad         & \forall i \in I, u \in U_i, d \in D \label{eq:gamma-def} \\
@@ -178,22 +178,22 @@ A condição inicial do estado é definida conforme a alocação prévia ao hori
 	\gamma_{i,CI_i,0} = 1 \quad & \forall i \in I \label{eq:gamma-init}
 \end{alignat}
 
-As restrições (\ref{eq:fo2-r0}) realizam a verificação de trocas entre o primeiro dia do horizonte (\(d=1\)) e a condição inicial. Computa-se troca somente caso o estado do médico no primeiro dia difira de \(CI_i\).
+As restrições (\ref{eq:fo2-r0}) realizam a verificação de trocas entre o primeiro dia do horizonte ($d=1$) e a condição inicial. Computa-se troca somente caso o estado do médico no primeiro dia difira de $CI_i$.
 
 \begin{alignat}{2}
 	z_{i1} \geq \gamma_{iu1} + \gamma_{i,CI_i,0} - 1 \quad & \forall i \in I, u \in U_i, u \neq CI_i \label{eq:fo2-r0}
 \end{alignat}
 
-As restrições (\ref{eq:fo2-r1}) computam as trocas para os demais dias. Detecta-se troca quando o estado do profissional no dia \(d\) (clínica \(u\)) difere de seu estado no dia \(d-1\) (qualquer clínica \(u' \neq u\)). Como \(\gamma\) preserva o estado durante dias sem alocação, as trocas são corretamente detectadas mesmo na presença de lacunas na agenda.
+As restrições (\ref{eq:fo2-r1}) computam as trocas para os demais dias. Detecta-se troca quando o estado do profissional no dia $d$ (clínica $u$) difere de seu estado no dia $d-1$ (qualquer clínica $u' \neq u$). Como $\gamma$ preserva o estado durante dias sem alocação, as trocas são corretamente detectadas mesmo na presença de lacunas na agenda.
 
 \begin{alignat}{2}
 	z_{id} \geq \gamma_{iud} + \sum_{\substack{u' \in U_i \\ u' \neq u}} \gamma_{i,u',d-1} - 1 \quad & \forall i \in I, u \in U_i, d \in D - \{1\} \label{eq:fo2-r1}
 \end{alignat}
 
-O objetivo final da função é, portanto, \textbf{minimizar} a quantidade total de trocas entre clínicas para todos os profissionais durante todo o horizonte de planejamento, dada uma condição inicial de alocação, como em (\ref{eq:fo2-fo}). A variável de estado \(\gamma\) garante que as trocas sejam corretamente contabilizadas mesmo quando os profissionais possuem agendas irregulares com lacunas.
+O objetivo final da função é, portanto, \textbf{minimizar} a quantidade total de trocas entre clínicas para todos os profissionais durante todo o horizonte de planejamento, dada uma condição inicial de alocação, como em (\ref{eq:fo2-fo}). A variável de estado $\gamma$ garante que as trocas sejam corretamente contabilizadas mesmo quando os profissionais possuem agendas irregulares com lacunas.
 
 \begin{equation}
 	\min \sum_{i \in I}\sum_{d \in D} z_{id} \label{eq:fo2-fo}
 \end{equation}
 
-É importante destacar a necessidade de um estado pré-existente ao utilizar computações de estados. Dessa forma, assume-se, mesmo que por estimativa (ou inicialização aleatória), uma clínica inicial a qual o médico está alocado, implicando na infactibilidade do modelo caso a representativa \(\gamma\) associada ao estado inicial do médico seja \(0\) para todas as clínicas, ou seja, o médico não esteja alocado a nenhuma clínica no período precedente ao horizonte de planejamento. Essa condição é necessária para que o modelo possa computar corretamente as trocas, mesmo que haja lacunas na agenda dos profissionais.
+É importante destacar a necessidade de um estado pré-existente ao utilizar computações de estados. Dessa forma, assume-se, mesmo que por estimativa (ou inicialização aleatória), uma clínica inicial a qual o médico está alocado, implicando na infactibilidade do modelo caso a representativa $\gamma$ associada ao estado inicial do médico seja $0$ para todas as clínicas, ou seja, o médico não esteja alocado a nenhuma clínica no período precedente ao horizonte de planejamento. Essa condição é necessária para que o modelo possa computar corretamente as trocas, mesmo que haja lacunas na agenda dos profissionais.

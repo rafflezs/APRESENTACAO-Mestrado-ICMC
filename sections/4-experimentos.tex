@@ -4,3 +4,89 @@
 %% - Descrição do ambiente de teste (hardware, software, bibliotecas)
 %% - Descrição das instâncias (exemplos, ilustrações, tabelas)
 %% - Descrição dos experimentos (instâncias, parâmetros, métricas)
+%% Fonte: docs/refs/dissertacao_tex/2-textual/experimentos-resultados.tex
+%% Arco: ambiente -> base/pipeline -> instâncias/protocolo -> métricas.
+
+%%% Frame 4.1 — Ambiente computacional
+\begin{frame}{Ambiente computacional}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Hardware} --- \textit{cluster} Euler (ICMC-USP)
+            \begin{itemize}
+                \item Intel Xeon E5-2670v3 (12 núcleos, 2,5\,GHz).
+                \item 128\,GB RAM por nó.
+                \item \textit{Job} PBS: 4 núcleos, 16\,GB.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Software}
+            \begin{itemize}
+                \item Python 3.12.8.
+                \item Gurobi 12.0.3 (licença acadêmica).
+                \item \textit{pymoo} 0.6.1 (NSGA-II).
+                \item Limite: \textbf{3.600\,s} por ponto $\varepsilon$.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+%%% Frame 4.2 — Base de dados + pipeline
+\begin{frame}{Base de dados e geração de instâncias}
+    \begin{columns}[c]
+        \begin{column}{0.44\textwidth}
+            \textbf{Dados reais} (2022--2023):
+            \begin{itemize}
+                \item 250 médicos, 37 unidades.
+                \item 28.445 registros de exames.
+                \item 576 dias consecutivos.
+            \end{itemize}
+            {\footnotesize Separação base-modelo \emph{vs.} validação evita vazamento.}
+        \end{column}
+        \begin{column}{0.56\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=\linewidth]{img/quali-etl-base-dados.png}
+                \caption{\textit{Pipeline} de geração de instâncias.}
+                \label{fig:pipeline}
+            \end{figure}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+%%% Frame 4.3 — Instâncias e protocolo
+\begin{frame}{Instâncias e protocolo}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.95\linewidth]{img/line-disponibilidade-demanda.png}
+        \caption{Demanda \emph{vs.} disponibilidade diárias (sazonalidade).}
+        \label{fig:demanda-dispo}
+    \end{figure}
+    \begin{itemize}
+        \item 4 horizontes aninhados: \textbf{15 / 30 / 60 / 90 dias} (quinzenal $\rightarrow$ trimestral).
+        \item 10 instâncias/horizonte: 2 parametrização $+$ 8 validação $\rightarrow$ 40 pares.
+    \end{itemize}
+\end{frame}
+
+%%% Frame 4.4 — Métricas de avaliação
+\begin{frame}{Métricas de avaliação}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Qualidade da fronteira}
+            \begin{itemize}
+                \item Hipervolume (HV).
+                \item Amplitude $Z_1$ / $Z_2$.
+                \item Gap de referência (vs. exato).
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Custo \& factibilidade}
+            \begin{itemize}
+                \item MIP gap.
+                \item Tempo de execução.
+                \item Taxa de factibilidade (NSGA-II).
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    \vspace{0.6em}
+    \centering{\footnotesize Multiobjetivo $\rightarrow$ qualidade da fronteira \emph{e} custo computacional.}
+\end{frame}

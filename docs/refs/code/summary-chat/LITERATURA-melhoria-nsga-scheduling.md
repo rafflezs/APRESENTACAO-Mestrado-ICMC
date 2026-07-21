@@ -6,7 +6,7 @@ Há várias variantes de NSGA‑II e alguns usos de NSGA‑III em escalonamento 
 
 - Em nurse rostering “industrial” (INRC‑I/II, múltiplas unidades, horizontes de semanas) o estado da arte são MIP/branch‑and‑price, matheurísticas e LNS/SA; MOEAs são mais comuns como baseline ou para casos didáticos. [link.springer](http://link.springer.com/10.1007/s10479-020-03527-6)
 - Em physician scheduling mais recente, resultados fortes vêm de modelos MIP com cortes e desigualdades válidas específicas (por exemplo, igualização de carga), e não de NSGA‑II. [sciencedirect](https://www.sciencedirect.com/science/article/abs/pii/S0305048317309726)
-- Revisões de NSGA‑II em scheduling mostram muitas adaptações de codificação, operadores e híbridos, inclusive para alocação hospitalar, mas quase nenhuma em escalas com centenas de profissionais × dezenas de dias com matrizes \(i,u,d,t\) binárias “full” como a sua. [opus.lib.uts.edu](https://opus.lib.uts.edu.au/bitstream/10453/168579/2/processes-10-00098-v2.pdf)
+- Revisões de NSGA‑II em scheduling mostram muitas adaptações de codificação, operadores e híbridos, inclusive para alocação hospitalar, mas quase nenhuma em escalas com centenas de profissionais × dezenas de dias com matrizes $i,u,d,t$ binárias “full” como a sua. [opus.lib.uts.edu](https://opus.lib.uts.edu.au/bitstream/10453/168579/2/processes-10-00098-v2.pdf)
 
 ***
 
@@ -40,7 +40,7 @@ Há várias variantes de NSGA‑II e alguns usos de NSGA‑III em escalonamento 
 Tomando as limitações que você listou (dimensionalidade absurda, gargalo de inicialização, quase nenhuma evolução, vizinhanças locais demais, ausência de informação dual, reparo difícil), o que a literatura efetivamente faz é: [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/119698365/813c3141-c592-407e-b315-61b0b9cd29fb/limitacoes-nsga2.md)
 
 - Reduzir dimensionalidade / usar codificação indireta.  
-  - NRP de competição e muitos trabalhos de GA codificam padrões de turno ou sequências por enfermeira/dia (ou por sequência de dias), em vez de um gene por variável \(x_{i,u,d,t}\), o que traz ordens de magnitude a menos em tamanho de cromossomo. [sciencedirect](https://www.sciencedirect.com/science/article/abs/pii/S0305054805001140)
+  - NRP de competição e muitos trabalhos de GA codificam padrões de turno ou sequências por enfermeira/dia (ou por sequência de dias), em vez de um gene por variável $x_{i,u,d,t}$, o que traz ordens de magnitude a menos em tamanho de cromossomo. [sciencedirect](https://www.sciencedirect.com/science/article/abs/pii/S0305054805001140)
   - Há abordagens rule‑based em que o cromossomo codifica apenas prioridades/pesos de regras, e um decodificador construtivo (muitas vezes tipo EDA + ant‑miner) gera o schedule, exatamente para evitar trabalhar diretamente em um hipercubo binário gigantesco. [arxiv](https://arxiv.org/pdf/0711.3591.pdf)
 
 - Inicialização híbrida e barata.  
@@ -64,7 +64,7 @@ Tomando as limitações que você listou (dimensionalidade absurda, gargalo de i
 ## Relação com o seu problema específico
 
 - O seu modelo trabalha com 500k–1,5M de genes binários, população ~100 e praticamente 1 geração útil sob orçamentos de minutos, o que te coloca fora do regime onde NSGA‑II é eficiente; a literatura evita exatamente essa combinação de alta dimensionalidade direta + inicialização construtiva pesada. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/119698365/813c3141-c592-407e-b315-61b0b9cd29fb/limitacoes-nsga2.md)
-- Codificar decisões no nível médico–dia (ou em padrões de agendas por bloco) e usar um decodificador rápido (e.g. MIP/CP simplificado, greedy) para gerar \(x_{i,u,d,t}\) é muito mais alinhado com o que tem funcionado em NRP realista e em scheduling de saúde (home care, workforce). [arxiv](https://arxiv.org/pdf/2311.05438.pdf)
+- Codificar decisões no nível médico–dia (ou em padrões de agendas por bloco) e usar um decodificador rápido (e.g. MIP/CP simplificado, greedy) para gerar $x_{i,u,d,t}$ é muito mais alinhado com o que tem funcionado em NRP realista e em scheduling de saúde (home care, workforce). [arxiv](https://arxiv.org/pdf/2311.05438.pdf)
 - Dado o acoplamento forte de G1–G6 e o gargalo de reparo que você observou, seguir a linha dos trabalhos que tratam factibilidade “por construção” (padrões válidos, operadores que preservam hard constraints) tende a ser mais promissor do que tentar sofisticar ainda mais o esquema de reparo em espaço binário full. [scitepress](https://www.scitepress.org/Papers/2024/124023/124023.pdf)
 
 ***
