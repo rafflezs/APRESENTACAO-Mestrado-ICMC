@@ -5,3 +5,59 @@
 % - Contribuições do trabalho
 % - Limitações do estudo
 % - Perspectivas de trabalhos futuros
+% Fonte: docs/refs/dissertacao_tex/2-textual/fechamento.tex
+% Arco: contribuições + recomendação -> limitações + trabalhos futuros.
+
+%%% Frame 6.1 — Contribuições + recomendação operacional
+\begin{frame}{Contribuições e recomendação}
+    \textbf{Contribuições}
+    \begin{footnotesize}
+        \begin{itemize}
+            \item Modelagem MIP \textbf{bi-objetiva} para múltiplas clínicas autônomas.
+            \item Variável de estado \(\gamma_{iud}\) (GLSP) \(\rightarrow\) trocas em agendas com lacunas.
+            \item Acoplamento \(\varepsilon\)-restrito \(\oplus\) MIP-heurísticas sob orçamento comum.
+            \item NSGA-II Estendido/Compacto com operadores customizados.
+            \item Avaliação sistemática das três famílias sobre dados reais.
+        \end{itemize}
+    \end{footnotesize}
+
+    \begingroup
+    \setbeamercolor{block title}{fg=white, bg=UFTgreen}
+    \setbeamercolor{block body}{bg=UFTgreen!10}
+    \begin{block}{Recomendação operacional}
+        \begin{footnotesize}
+            Quinzenal (15 d) \(\rightarrow\) \textbf{exato}; mensal+ \(\rightarrow\) heurísticas: \textbf{Híbrido} (tempo folgado) ou \textbf{NSGA-IIc} (tempo estrito).
+        \end{footnotesize}
+    \end{block}
+    \endgroup
+\end{frame}
+
+%%% Frame 6.2 — Limitações + trabalhos futuros
+\begin{frame}{Limitações e trabalhos futuros}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Limitações}
+            \begin{footnotesize}
+                \begin{itemize}
+                    \item NSGA-II viola cobertura mínima (R\ref{eq:r6}); ler isolado.
+                    \item Demanda/disponibilidade determinísticas.
+                    \item Regras ergonômicas fora do modelo.
+                \end{itemize}
+            \end{footnotesize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Trabalhos futuros}
+            \begin{footnotesize}
+                \begin{itemize}
+                    \item Operadores de \textbf{reparo} de cobertura.
+                    \item Demanda estocástica / reescalonamento \textit{online}.
+                    \item \textit{Warm-start} por Aprendizado de Máquina.
+                    \item \textit{Pipeline} híbrida exato \(\oplus\) meta-heurística.
+                \end{itemize}
+            \end{footnotesize}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.6em}
+    \centering{\footnotesize Tratamento conjunto de \textbf{múltiplas unidades} e \textbf{minimização de trocas} --- pouco explorado na literatura.}
+\end{frame}
