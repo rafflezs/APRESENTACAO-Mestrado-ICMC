@@ -42,15 +42,34 @@
     \endgroup
 \end{frame}
 
+%%% Frame 5.1b — MIP gap das MIP-heurísticas (RF e Híbrido)
+\begin{frame}{MIP gap: exato \emph{vs.} MIP-heurísticas}
+    \begin{center}
+        \footnotesize
+        \begin{tabular}{lccc}
+            \toprule
+            \textbf{Horizonte} & \textbf{Exato} & \textbf{RF} & \textbf{Híbrido} \\
+            \midrule
+            15 d & 4,8\%  & 10,8\% & 4,9\%  \\
+            30 d & 44,8\% & 53,7\% & 44,3\% \\
+            60 d & 78,9\% & 82,2\% & 81,1\% \\
+            90 d & 97,1\% & 97,7\% & 94,9\% \\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \vspace{0.4em}
+    {\footnotesize Mesmo conjunto de instâncias para as três famílias. O gap do heurístico usa \textbf{limitante próprio} (mais frouxo) \(\rightarrow\) não comparável ponto a ponto: um incumbente melhor pode exibir gap maior. Além de 15 d, \textbf{nenhum} método prova otimalidade.}
+\end{frame}
+
 %%% Frame 5.2 — Fronteiras de Pareto (exato + MIP-heurísticas)
 \begin{frame}{Fronteiras de Pareto: exato \emph{vs.} MIP-heurísticas}
     \begin{figure}
         \centering
-        \includegraphics[width=0.78\linewidth]{img/pareto_comparativo_todos_horizontes.png}
+        \includegraphics[width=0.72\linewidth]{img/pareto_comparativo_todos_horizontes.png}
         \caption{Fronteiras por horizonte: Exato, RF, Híbrido.}
         \label{fig:pareto}
     \end{figure}
-    {\footnotesize Em 15 d as curvas se aproximam do ótimo; em 60--90 d a referência exata é sub-ótima.}
+    {\footnotesize Em 15 d \(\approx\) ótimo. Em 60--90 d \textbf{nenhum} método converge: as curvas são incumbentes no limite de tempo. O RF decompõe o horizonte \(\rightarrow\) melhores incumbentes \emph{factíveis} no mesmo tempo (não otimalidade).}
 \end{frame}
 
 %%% Frame 5.4 — Escalabilidade e tempo

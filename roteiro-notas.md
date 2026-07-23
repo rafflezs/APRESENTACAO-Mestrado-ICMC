@@ -64,7 +64,8 @@ Thiago Rafael Mariotti Claudio · Orientadora: Profa. Dra. Maristela Oliveira do
 **Âncora: "Existe uma virada entre 15 e 30 dias — daí em diante, heurística é obrigatória."**
 
 - **5.1 Transição de regime** ⭐ — 🔑 MIP gap: **4,1% (15d) → 42,7 → 78,1 → 96,8%**. Exato só converge no **quinzenal**. ➡️ "≥30 d exige aproximação."
-- **5.2 Fronteiras de Pareto** — 🎯 só os **factíveis**: Exato, RF, Híbrido (NSGA **fora** — não comparável, ver 5.6/5.7). Em 15 d os três ≈ ótimo; em 60–90 d a referência exata **já é sub-ótima**.
+- **5.1b MIP gap: exato vs MIP-heur.** — 🎯 tabela Exato/RF/Híbrido (mesmo conjunto). 🔑 gap do heurístico usa **limitante próprio (mais frouxo)** → **não é comparação de qualidade**; RF pode ter gap maior *e* solução melhor. Além de 15 d, ninguém prova ótimo.
+- **5.2 Fronteiras de Pareto** — 🎯 só os **factíveis**: Exato, RF, Híbrido (NSGA **fora** — ver 5.6/5.7). ⚠️ **RF parece bater exato/Híbrido em 60–90 d**: explicar — ninguém converge, curvas = incumbentes no limite de tempo; RF **decompõe** → melhor incumbente factível no mesmo tempo (**não** otimalidade).
 - **5.4 Escalabilidade/tempo** — 🔑 NSGA-II **~7× mais rápido** (≈3.600 s vs ≈25.200 s).
 - **5.5 Parametrização** — 🎯 Compacto (allon) **HV 0,67–0,72** vs Estendido **0,47–0,51**; MIP-heur: RF w75/o2 e Híbrido w50/o2.
 - **5.6 NSGA-II: resultados (Compacto vs Estendido)** — 🎯 mostra a **fronteira isolada** do genético (dentro da família, não vs exato). 🔑 **Compacto domina o Estendido**: mesmas trocas, bem menos exames não atendidos → efeito do cromossomo ~70× menor. Instância 30 d.
