@@ -13,7 +13,7 @@
 
     % \vspace{-1cm}
     \begin{center}
-        Médicos $\rightarrow$ Clínicas $\rightarrow$ Demanda \\
+        Médicos \(\rightarrow\) Clínicas (Conjunto) \(\rightarrow\) Demanda \\
         {\footnotesize \cite{Rousseau_Pesant_Gendreau_2002,Robinson_Chen_2003}.}
     \end{center}
 
@@ -44,9 +44,9 @@
                 \textit{H2} & Médico associado a uma única unidade por dia. \\
                 \textit{H3} & Médico associado a uma sala da clínica. \\
                 \textit{H4} & Médico realiza exames conforme a demanda da unidade. \\
-                \textit{H5} & Atendimentos $-$ demanda $=$ exames não atendidos. \\
+                \textit{H5} & Atendimentos \(-\) demanda \(=\) exames não atendidos. \\
                 \textit{H6} & Agenda irregular: sem limite de trocas entre clínicas. \\
-                \textit{H7} & Condição inicial (histórico) $\rightarrow$ minimizar remanejamentos. \\
+                \textit{H7} & Condição inicial (histórico) \(\rightarrow\) minimizar remanejamentos. \\
                 \bottomrule
             \end{tabular}
         \end{table}
@@ -58,39 +58,40 @@
 \begin{frame}{Notação}
     \begin{small}
         \begin{columns}[T]
-            \begin{column}{0.5\textwidth}
+            \begin{column}{0.4\textwidth}
                 \textbf{Índices e conjuntos}
                 \begin{tabular}{ll}
-                    $i \in I$ & Médicos \\
-                    $u \in U$ & Unidades \\
-                    $d \in D$ & Dias \\
-                    $t \in T$ & Turnos \\
-                    $U_i$     & Unidades de $i$ \\
-                    $I_u$     & Médicos de $u$ \\
+                    \(i \in I\) & Médicos \\
+                    \(u \in U\) & Unidades \\
+                    \(d \in D\) & Dias \\
+                    \(t \in T\) & Turnos \\
+                    \(U_i\)     & Unidades de \(i\) \\
+                    \(I_u\)     & Médicos de \(u\) \\
                 \end{tabular}
 
                 \vspace{0.4em}
                 \textbf{Parâmetros}
                 \begin{tabular}{ll}
-                    $e_{udt}$ & Demanda de exames \\
-                    $s_{udt}$ & Salas disponíveis \\
-                    $q_{idt}$ & Capacidade do médico \\
-                    $a_{idt}$ & Disponibilidade $(0/1)$ \\
-                    $b_{udt}$ & Há demanda? $(0/1)$ \\
+                    \(e_{udt}\) & Demanda de exames \\
+                    \(s_{udt}\) & Salas disponíveis \\
+                    \(q_{idt}\) & Capacidade do médico \\
+                    \(a_{idt}\) & Disponibilidade \((0/1)\) \\
+                    \(b_{udt}\) & Há demanda? \((0/1)\) \\
                 \end{tabular}
             \end{column}
-            \begin{column}{0.5\textwidth}
+            \begin{column}{0.6\textwidth}
                 \textbf{Variáveis de decisão}
                 \begin{tabular}{ll}
-                    $x_{iudt}$ & Aloca $i$ em $u$, dia $d$, turno $t$ \\
-                    $w_{iud}$  & Aloca $i$ em $u$ no dia $d$ \\
-                    $c_{udt}$  & Exames não atendidos \\
-                    $z_{id}$   & $i$ trocou de clínica no dia $d$ \\
+                    \(x_{iudt}\) & Alocação de \(i\) em \(u\), dia \(d\), turno \(t\) \\
+                    \(w_{iud}\)  & Alocação de \(i\) em \(u\) no dia \(d\) \\
+                    \(c_{udt}\)  & Exames não atendidos \\
+                    \(z_{id}\)   & Contabilização de trocas \\
+                    \(\gamma_{iud}\) & Mudança de unidade entre dias \\
                 \end{tabular}
 
                 \vspace{0.8em}
                 \begin{block}{Período}
-                    Dia $d$ $\times$ turno $t$ (manhã/tarde); domingo com demanda $0$.
+                    Dia \(d\) \(\times\) turno \(t\) (manhã/tarde); domingo com demanda \(0\).
                 \end{block}
             \end{column}
         \end{columns}
@@ -116,17 +117,17 @@
 \end{frame}
 
 %%% Frame 2.5 — Funções objetivo Z1 e Z2 (bi-objetivo)
-\begin{frame}{Os "bi"-objetivos do problema}
+\begin{frame}{Os ``bi''-objetivos do problema}
     \begin{columns}[T]
         \begin{column}{0.54\textwidth}
-            $Z_1$ --- \textbf{exames não atendidos} (operacional):
+            \(Z_1\) --- \textbf{exames não atendidos} (operacional):
             \begin{alignat}{2}
                 c_{udt} &\geq e_{udt} - \!\!\sum_{i \in I_u}\! q_{idt}\, x_{iudt} \label{eq:fo1-r1} \\
                 \min\; & \sum_{u,d,t} c_{udt} \label{eq:fo1}
             \end{alignat}
 
             \vspace{0.5em}
-            $Z_2$ --- \textbf{trocas de clínica} (ergonômico):
+            \(Z_2\) --- \textbf{trocas de clínica} (ergonômico):
             \begin{equation}
                 \min\; \sum_{i \in I}\sum_{d \in D} z_{id} \label{eq:fo2}
             \end{equation}
@@ -135,7 +136,7 @@
             \begin{figure}
                 \centering
                 \includegraphics[width=\linewidth]{img/troca-examplo.png}
-                \caption{Troca $=$ mudar de unidade entre dias.}
+                \caption{Troca \(=\) mudar de unidade entre dias.}
                 \label{fig:ex-troca}
             \end{figure}
         \end{column}
@@ -148,7 +149,7 @@
     \begin{columns}[T]
         \begin{column}{0.55\textwidth}
             \begin{block}{Problema}
-                Lacunas (dias sem trabalho) quebram a comparação ingênua de $w$ entre dias consecutivos.
+                Lacunas (dias sem trabalho) quebram a comparação ingênua de \(w\) entre dias consecutivos.
             \end{block}
         \end{column}
         \begin{column}{0.5\textwidth}
@@ -160,7 +161,7 @@
                     z_{id} &\geq \gamma_{iud} + \!\!\sum_{u' \neq u}\! \gamma_{i,u',d-1} - 1 \label{eq:g-swap}
                 \end{alignat}
                 }
-                {\centering\tiny $\gamma_{iud}$ adaptado do GLSP~\cite{Fleischmann_Meyr_1997}.\par}
+                {\centering\tiny \(\gamma_{iud}\) adaptado do GLSP~\cite{Fleischmann_Meyr_1997}.\par}
             \end{minipage}}
         \end{column}
     \end{columns}
@@ -168,7 +169,7 @@
         \begin{figure}
             \centering
             \includegraphics[width=0.7\linewidth]{img/04_nsga-05_gama.png}
-            \caption{Estado $\gamma$ persiste nas lacunas.}
+            \caption{Estado \(\gamma\) persiste nas lacunas.}
             \label{fig:gamma}
         \end{figure}
     \end{center}
